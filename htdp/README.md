@@ -3,13 +3,7 @@
 ## The book
 
 1. **[How to design programs](https://htdp.org/2018-01-06/Book/)**
-
-## Documentation:
-
-1. **[Styleguide](https://docs.racket-lang.org/style/index.html)**
-    + Also see _[common lisp styleguide](https://lisp-lang.org/style-guide/)_
-2. **[Racket overview](https://docs.racket-lang.org/guide/to-scheme.html)**
-2. **[Language packages](https://docs.racket-lang.org/htdp-langs/index.html)**
+2. **[Beginner language](https://docs.racket-lang.org/htdp-langs/beginner.html)
 
 
 ---
