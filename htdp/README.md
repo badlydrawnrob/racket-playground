@@ -4,6 +4,7 @@
 
 1. **[How to design programs](https://htdp.org/2018-01-06/Book/)**
 2. **[Beginner language](https://docs.racket-lang.org/htdp-langs/beginner.html)
+3. **[Exercise answers on Github](https://github.com/emaphis/HtDP2e-solutions)
 
 
 ---

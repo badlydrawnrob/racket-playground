@@ -70,14 +70,26 @@
       (error "Please enter two strings")))
 
 
-; Ex.19 Insert a string at ith position
-; Only if `i` is within range (and not just whitespace)
-; != Breaks for negative numbers
-; != 1. (explode s)
-;       + Insert at position i ... (list-ref x i)
-; != 2. (implode s) with "_" at position i?
+;; Ex.19 Insert a string at ith position
+;; Only if `i` is within range (and not just whitespace)
+;; - substring works in a similar way to slice[0:5]
 (define (string-insert str i)
   (if (and (>= (string-length str) i)
            (not (string-whitespace? str)))
-      "this is cool"
-      (error "this is not")))
+      (string-append (substring str 0 i) "_" (substring str i))
+      (error "something went wrong")))
+
+
+;; Ex.20 Delete a character from ith position of string
+;; Assume i is a number between 0 [inclusive]
+;; ... and len(string) [exclusive]
+;; ... as in, it needs to be within range (index)
+;;
+;; != Does not return string if `i` is zero
+;;    - you'd have to use some kind of (cond ..) or multiple (if ..)
+(define (string-delete str i)
+  (if (and (not (string-whitespace? str))
+           (> i 0)
+           (< i (string-length str)))
+      (string-append (substring str 0 i) (substring str (+ i 1)))
+      (error "something went wrong")))
