@@ -34,8 +34,9 @@
       (error "string is empty")))
 
 
-; Ex.15 "implication" boolean operation: https://stackoverflow.com/a/1823201
-; If A is true, then B must be true: (or (not A) B)
+; Ex.15 "implication" boolean operation:
+; if A is true, then B must be true: (or (not A) B)
+; @link: https://stackoverflow.com/a/1823201
 (define (==> sunny friday)
   (if (or (equal? #false sunny) (equal? #true friday)) #true #false))
 
