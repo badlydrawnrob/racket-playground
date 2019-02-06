@@ -8,6 +8,7 @@
 ;; helper functions
 ;;
 ;; > Define one function per task
+;; > Main function compiles/runs the tasks
 ;;
 ;; #1: Allows you to read/write files
 ;; #2: Thing of 'stdout as a String for now
@@ -45,4 +46,5 @@
 (letter "Bobby" "Charlton" "Babs")
 
 ; Enter this into cli
+; — Consider 'stdout as a String for now ...
 ; (write-file 'stdout (letter "Matt" "Fiss" "Fell"))  ; #2
