@@ -19,4 +19,5 @@
 ;; - also accepts 'stdout (prints string to console)
 
 ;; (read-file string)
+;; - also accepts 'stdin (instead of file name)
 
