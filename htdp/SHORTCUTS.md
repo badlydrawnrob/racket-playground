@@ -5,3 +5,5 @@
 | Command | Does this |
 |=========|========|
 | `cmd` + `/` |  Show possible functions |
+| `esc` + `p`/`n` | **p**revious / **n**ext command |
+| `cmd` + `ctrl` + `↑`/`↓` | ""

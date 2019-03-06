@@ -21,3 +21,26 @@
 ;; (read-file string)
 ;; - also accepts 'stdin (instead of file name)
 
+;; Celsius to farenheit:
+;; - C = 5/9 * (f - 32)
+;;   - f is a given value
+;;   - C is computed from f
+;;   - so C(f) is the function definition
+
+(define (C f)
+  (* 5/9 (- f 32)))
+
+;; Read in farenheit
+;; Write out celsius
+;; - The function processes from the inside out!
+;; - Seems to output a fraction (not a decimal string)
+
+(define (convert in out)
+  (write-file out
+    (string-append
+      (number->string
+        (C
+         (string->number
+           (read-file in))))
+      "\n")))
+         
