@@ -43,4 +43,6 @@
          (string->number
            (read-file in))))
       "\n")))
+
+(convert "sample.dat" "out.dat")
          

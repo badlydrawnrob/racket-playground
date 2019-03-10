@@ -48,3 +48,20 @@
 ; Enter this into cli
 ; — Consider 'stdout as a String for now ...
 ; (write-file 'stdout (letter "Matt" "Fiss" "Fell"))  ; #2
+
+
+
+;; Ex 31:
+;; — Run function from file
+;; — Write out to file
+
+(define (main in-fst in-lst in-signature out)
+  (write-file out
+              (letter (read-file in-fst)
+                      (read-file in-lst)
+                      (read-file in-signature))))
+
+;; (main "io/letter-firstname.txt"
+;;       "io/letter-lastname.txt"
+;;       "io/letter-signature.txt"
+;;       "io/letter.txt")
