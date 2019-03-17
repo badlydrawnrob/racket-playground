@@ -14,6 +14,8 @@
 ;; Two types of programs: Batch (i/o), interactive (gui)
 
 (require 2htdp/batch-io)
+(require 2htdp/universe)
+(require 2htdp/image)
 
 ;; (write-file filename string)
 ;; - also accepts 'stdout (prints string to console)
@@ -44,5 +46,29 @@
            (read-file in))))
       "\n")))
 
-(convert "sample.dat" "out.dat")
-         
+;; Run function:
+;; (convert "sample.dat" "out.dat")
+
+;; Introduction to big-bang:
+;; @ https://bit.ly/2FbVzwA
+;; — initial state,
+;; - transformed state (event handler),
+;; - rendered state (new state, using function)
+
+(define (number->square s)
+  (square s "solid" "red"))
+
+;; Deal with key events
+;; - return a new state
+(define (reset s a-key)
+  100)
+
+;; Run the Worldstate:
+;;
+;; (big-bang 100                ;; Expression
+;;   [to-draw number->square]   ;; Render initial state (expression->function)
+;;   [on-tick sub1]             ;; Change state (re-render function)
+;;   [stop-when zero?]          ;; End state
+;;   [on-key reset])            ;; Reset state (re-render function)
+
+
