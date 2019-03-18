@@ -11,6 +11,9 @@
 ;; "For every constant mentioned in a problem statement,
 ;;  introduce one constant definition."
 ;;
+;; On human error. Don't make me think!
+;; "Write as if you're stupid, for your stupid future self"
+;;
 ;; Two types of programs: Batch (i/o), interactive (gui)
 
 (require 2htdp/batch-io)
