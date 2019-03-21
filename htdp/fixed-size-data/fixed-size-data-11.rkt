@@ -34,4 +34,56 @@
 ;;    [on-key stop-function]))   Event handler -> end program
 
 
+;; 1. data definitions (how you're representing information)
+;; 2. function signature, statement of purpose, function header
+;;    — inputs consumed, outputs produced
+;;    - what does the function compute?
+;;    - Give it a name, paramaters and dummy data (from data definititon type)
+;; 3. Illustrate the function with some examples
+;; 4. Take inventory. What do we need to do to make it work?
+;;    - Make a basic template 
+;; 5. Build the function as described above
+;; 6. Test the function works
 
+
+;; Design the function, without worrying about it working
+;; ======================================================
+;; Make it work with any old output first
+
+
+; Number String Image -> Image 
+; adds s to img,
+; y pixels from the top and 10 from the left
+; given: 10 "this" img, expect: img (with string overlay)
+(define (add-image y s img)
+  (empty-scene 100 100))
+
+
+;; Once you've designed your function, make it work!
+;; =================================================
+;; Code up the function properly, test it works
+
+; Number -> Number
+; computes the area of a square with side len
+; given: 2, expect: 4
+; given: 7, expect: 49
+(define (area-of-square len)
+  (sqr len))
+
+
+;; Another example:
+;; ================
+;; Create a dummy template with outline of functions
+
+; Number String Image -> Image
+; adds s to img,
+; y pixels from the top and 10 from the left
+; given:
+;    5 for y,
+;    "hello" for s, and
+;    (empty-scene 100 100) for img
+; expected:
+;    (place-image (text "hello" 10 "red") 10 5 ...)
+;    where ... is (empty-scene 100 100)
+(define (add-another-image y s img)
+  (place-image (text s 10 "red") 10 y img))
