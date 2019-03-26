@@ -1,7 +1,7 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname fixed-size-data-11) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
-;; 2.5 Programs
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname fixed-size-data-12) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;; 3.2 Finger Exercises: Functions
 ;;
 ;; 1. What is the problem question?
 ;; 2. Chunk it into component parts (questions/output)
@@ -34,8 +34,8 @@
 ;;    [on-key stop-function]))   Event handler -> end program
 
 
-;; 1. data definitions (how you're representing information)
-;; 2. function signature, statement of purpose, function header
+;; 1. Data definitions (how you're representing information)
+;; 2. Function signature, statement of purpose, function header
 ;;    — inputs consumed, outputs produced
 ;;    - what does the function compute?
 ;;    - Give it a name, paramaters and dummy output (stub, definititon type)
@@ -48,44 +48,47 @@
 ;;              check for logical errors in function
 
 
-;; Design the function, without worrying about it working
-;; ======================================================
-;; Make it work with any old output first
+;; Ex. 34
 
+; String -> Char
+; Extract first char from non-empty string
+; given: "bertie", expected: "b"
+(define (string-first string)
+  (string-ith string 0))
 
-; Number String Image -> Image 
-; adds s to img,
-; y pixels from the top and 10 from the left
-; given: 10 "this" img, expect: img (with string overlay)
-(define (add-image y s img)
-  (empty-scene 100 100))
+;; Ex. 35
 
+; String -> Char
+; Extract last character from non-empty string
+; given: "julie", expected: #\e
+(define (string-last string)
+  (string-ref string (- (string-length string) 1)))
 
-;; Once you've designed your function, make it work!
-;; =================================================
-;; Code up the function properly, test it works
+;; Ex. 36
 
-; Number -> Number
-; computes the area of a square with side len
-; given: 2, expect: 4
-; given: 7, expect: 49
-(define (area-of-square len)
-  (sqr len))
-
-
-;; Another example:
-;; ================
-;; Create a dummy template with outline of functions
-
-; Number String Image -> Image
-; adds s to img,
-; y pixels from the top and 10 from the left
+; Image -> Number
+; Counts number of pixels in a given image
 ; given:
-;    5 for y,
-;    "hello" for s, and
-;    (empty-scene 100 100) for img
+;    (circle 30 "outline" "red")
 ; expected:
-;    (place-image (text "hello" 10 "red") 10 5 ...)
-;    where ... is (empty-scene 100 100)
-(define (add-another-image y s img)
-  (place-image (text s 10 "red") 10 y img))
+;    3600
+(define (image-area img)
+  (* (image-height img) (image-width img)))
+
+;; Ex. 37
+
+; String -> String
+; Produces a duplicate string with first character removed
+; given: "scrumptious", expected: "crumptious"
+; (define (string-rest string) "") — stub
+(define (string-rest string)
+  (substring string 1))
+
+;; Ex. 28
+
+; String -> String
+; Produces duplicate string with last character removed
+; given "bloody hell", expected: "bloody hel"
+; (define (string-remove-last string) "")
+(define (string-remove-last string)
+  (substring string 0 (- (string-length string) 1)))
