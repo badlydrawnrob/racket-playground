@@ -1,6 +1,6 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname fixed-size-data-14) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname fixed-size-data-15) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;; 3.6 Designing World Programs
 ;; ============================
 ;; @ https://bit.ly/2CKBPzI
@@ -123,6 +123,17 @@ tree
 (check-expect (end? (* WHEEL-RADIUS 35)) #true)
 
 
+; WorldState Number Number String -> WorldState
+; places the car at x-mouse
+; if the given mouse-event is "button-down"
+(define (hyper x-position-of-car x-mouse y-mouse me)
+  (cond
+    [(string=? me "button-down") x-mouse]
+    [else x-position-of-car]))
+
+(check-expect (hyper 30 50 30 "button-down") 50)
+(check-expect (hyper 30 50 30 "enter") 30)
+
 
 ;; 4. The main function
 ;;    - Doesn't require design or testing
@@ -134,4 +145,5 @@ tree
   (big-bang ws
     [to-draw render-car]
     [on-tick move-car]
+    [on-mouse hyper]
     [stop-when end?]))
