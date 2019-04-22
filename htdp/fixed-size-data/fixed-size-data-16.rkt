@@ -11,8 +11,9 @@
 (require 2htdp/universe)
 (require 2htdp/image)
 
-;; Exercise 45
-;; Continuously move the cat from left to right
+;; Exercise 45, 46
+;; — Continuously move the cat from left to right
+;; — Context dependant image
 
 (define CAT (bitmap "io/cat1.png"))
 (define CAT2 (bitmap "io/cat2.png"))
