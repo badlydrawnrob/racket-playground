@@ -4,6 +4,7 @@
 ;; 4.4 Intervals (v2)
 ;; ==================
 ;; When your data is potentially infinite (i.e, numbers)
+;; See also @link: https://www.mathsisfun.com/sets/intervals.html
 ;; 
 ;;
 ;; #1: BUG / TODO
