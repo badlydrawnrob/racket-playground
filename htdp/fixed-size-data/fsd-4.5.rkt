@@ -74,37 +74,36 @@
 ; LRCD -> Image
 ; Split out the place-image function
 ; - DRY!
-
+(define (render-rocket x)
+  (place-image ROCKET (/ WIDTH 2) x BACKG))
 
 ; LRCD -> Image
 ; renders the state as a resting or flying rocket
 ; #3
 (check-expect (show "resting")
-              (place-image ROCKET (/ WIDTH 2) BOTTOM BACKG))
+              (render-rocket BOTTOM))
 (check-expect (show -2)
               (place-image
                (text "-2" 20 "red")
                10 (* 3/4 WIDTH)
-               (place-image ROCKET (/ WIDTH 2) BOTTOM BACKG)))
+               (render-rocket BOTTOM)))
 (check-expect (show 0)
-              (place-image ROCKET (/ WIDTH 2) 0 BACKG))
+              (render-rocket 0))
 (check-expect (show 52)
-              (place-image ROCKET (/ WIDTH 2) 52 BACKG))
+              (render-rocket 52))
 
 
 (define (show x)
    (cond
      [(and (string? x)
            (string=? "resting" x))
-      (place-image ROCKET (/ WIDTH 2) BOTTOM BACKG)]
+      (render-rocket BOTTOM)]
      [(<= -3 x -1)
       (place-image (text (number->string x) 20 "red")
                    10 (* 3/4 WIDTH)
-                   (place-image ROCKET
-                                (/ WIDTH 2) BOTTOM
-                                BACKG))]
+                   (render-rocket BOTTOM))]
       [(>= x 0)
-       (place-image ROCKET (/ WIDTH 2) x BACKG)]))
+       (render-rocket x)]))
 
 ; LRCD KeyEvent -> LRCD
 ; starts the countdown when space bar is pressed,
