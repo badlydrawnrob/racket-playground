@@ -34,8 +34,8 @@
     [(false? x) 3]
     [else (+ x 3)]))
 
-;; Exercise 53, 54, 55
-;; -------------------
+;; Exercise 53, 54, 55, 56, 57
+;; ---------------------------
 ;; Design a program that launches a rocket
 ;; + When user presses space bar
 ;;
@@ -145,7 +145,18 @@
     [(string? x) x]
     [(<= -3 x -1) (if (= x -1) BOTTOM (+ x 1))]
     [(>= x 0) (- x YDELTA)]))
-    
+
+
+; LRCD -> Boolean
+; Stop the animation when the rocket is in space
+(check-expect (space? 0) #true)
+(check-expect (space? 200) #false)
+(check-expect (space? "resting") #false)
+
+(define (space? x)
+  (if (and (number? x) (= 0 x))
+      #true
+      #false))
 
 
 ; LRCD -> LRCD
@@ -160,4 +171,5 @@
   (big-bang y
     [to-draw show]
     [on-key launch]
-    [on-tick fly]))
+    [on-tick fly 0.175]   ; Change "tick" rate
+    [stop-when space?]))
