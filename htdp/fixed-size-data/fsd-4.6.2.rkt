@@ -64,8 +64,40 @@
 (check-expect (sales-tax 10000) (* 0.08 10000))
 (check-expect (sales-tax 10001) (* 0.08 10001))
 
-(define (sales-tax p)
+; Template first ...
+(define (sales-tax-template p)
   (cond
     [(and (>= p 0) (< p 1000)) ...]
-    [(and (<= 1000 p) (< p 10000)) ...] ; #1 (should be 9999)
+    [(and (<= 1000 p) (< p 10000)) ...]
     [(>= p 10000) ...]))
+
+; Then fill in the blanks ...
+(define (sales-tax p)
+  (cond
+    [(and (>= p 0) (< p 1000)) 0]
+    [(and (<= 1000 p) (< p 10000)) (* 0.05 p)]
+    [(>= p 10000) (* 0.08 p)]))
+
+
+;; Finally, add constants so taxes can be amended later
+;; ====================================================
+(define TAX1 0)
+(define TAX2 0.05)
+(define TAX3 0.08)
+
+(define PRICE1 0)
+(define PRICE2 1000)
+(define PRICE3 10000)
+
+(check-expect (sales-tax-refined PRICE1) (* TAX1 PRICE1))
+(check-expect (sales-tax-refined 500) (* TAX1 PRICE1))
+(check-expect (sales-tax-refined PRICE2) (* TAX2 PRICE2))
+(check-expect (sales-tax-refined 1050) (* TAX2 1050))
+(check-expect (sales-tax-refined PRICE3) (* TAX3 PRICE3))
+(check-expect (sales-tax-refined 10001) (* TAX3 10001))
+
+(define (sales-tax-refined p)
+  (cond
+    [(and (<= PRICE1 p) (< p PRICE2)) TAX1]
+    [(and (<= PRICE2 p) (< p PRICE3)) (* TAX2 p)]
+    [(>= PRICE3) (* TAX3 p)]))
