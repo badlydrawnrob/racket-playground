@@ -121,4 +121,4 @@
   (big-bang initial-state
     [to-draw door-render]
     [on-key door-action]
-    [on-tick door-closer 1]))
+    [on-tick door-closer 5]))
