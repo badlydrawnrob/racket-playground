@@ -37,8 +37,8 @@
 
 (define (distance-to-0 posn)
   (inexact->exact
-   (floor (sqrt (+ (expt (posn-x posn) 2)
-                   (expt (posn-y posn) 2))))))
+   (floor (sqrt (+ (sqr (posn-x posn))
+                   (sqr (posn-y posn)))))))
 
 
 
