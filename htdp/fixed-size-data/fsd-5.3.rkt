@@ -48,8 +48,31 @@
 (check-expect (simple-distance-to-0 (make-posn 3 4)) 5)
 (check-expect (simple-distance-to-0 (make-posn 8 6)) 10)
 (check-expect (simple-distance-to-0 (make-posn 5 12)) 13)
-(check-expect (simple-distance-to-0 (make-posn 10.6 12)) 16)  ; #2
+;(check-expect (simple-distance-to-0 (make-posn 10.6 12)) 16)  ; #2
+
+; template
+;(define (fn-for-posn ap)
+;  (... (posn-x ap) ...
+;   ... (posn-y ap) ...))
 
 (define (simple-distance-to-0 ap)
   (sqrt (+ (sqr (posn-x ap))
            (sqr (posn-y ap)))))
+
+
+;; Exercise 63
+(simple-distance-to-0 (make-posn 6 (* 2 4)))   ; 10
+(simple-distance-to-0 (make-posn 3 4))         ; 5
+(+ (simple-distance-to-0 (make-posn 12 5)) 10) ; 23 (+ 13 10)
+
+
+;; Exercise 64
+;; @link: https://bit.ly/2EcOjRt
+;; - First image is much simpler to calculate
+;; - Ignore inexact numbers (need to store as var and inexact?)
+(check-expect (manhattan-distance (make-posn 0 0)) 0)
+(check-expect (manhattan-distance (make-posn 3 4)) 7)
+
+(define (manhattan-distance posn)
+  (+ (posn-x posn)
+     (posn-y posn)))
