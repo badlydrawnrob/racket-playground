@@ -61,6 +61,8 @@
 
 
 ;; Exercise 63
+;; - supposed to write this out in stages, but can't be arsed
+;;   to type it out on here.
 (simple-distance-to-0 (make-posn 6 (* 2 4)))   ; 10
 (simple-distance-to-0 (make-posn 3 4))         ; 5
 (+ (simple-distance-to-0 (make-posn 12 5)) 10) ; 23 (+ 13 10)
