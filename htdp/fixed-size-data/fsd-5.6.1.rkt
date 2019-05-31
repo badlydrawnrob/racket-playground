@@ -142,3 +142,11 @@
   (make-posn n (posn-y p)))  ; #1
 
 (check-expect (posn-up-x (make-posn 10 20) 30) (make-posn 30 20))
+
+
+
+;; Exercise 74
+;; -----------
+;; Done (I think)
+
+; > (main (make-posn 0 50))
