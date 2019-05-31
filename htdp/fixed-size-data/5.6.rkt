@@ -83,7 +83,7 @@
 (define (main p0)
   (big-bang p0
     [on-tick x+]
-    [on-mouse reset-dot]
+    [on-mouse set-dot-position]
     [to-draw scene+dot]))
 
 
@@ -98,14 +98,29 @@
               (place-image DOT 88 73 MTS))
 
 
+;; Sample problems
+;; ---------------
+
 ; Posn -> Posn
-; Allow user to reset the dot on mouse event
+; Allow user to reset the dot on mouse event (mouse click)
 (define (reset-dot p x y me)
   (cond
-    [(string=? me "button-down") RESET]
+    [(string=? "button-down" me) RESET]
     [else (make-posn (posn-x p) (posn-y p))]))
 
 (check-expect (reset-dot (make-posn 10 20) 5 10 "button-down") RESET)
+
+; Posn -> Posn
+; Allow user to choose position on mouse event
+(define (set-dot-position p x y me)
+  (cond
+    [(string=? "button-down" me) (make-posn x y)]
+    [else p]))
+
+(check-expect (set-dot-position (make-posn 21 40) 15 9 "button-down")
+              (make-posn 15 9))
+(check-expect (set-dot-position (make-posn 30 21) 20 18 "button-up")
+              (make-posn 30 21))
 
 
 ; Posn -> Posn
