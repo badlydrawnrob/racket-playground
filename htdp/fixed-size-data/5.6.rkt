@@ -8,6 +8,10 @@
 ;;   ; A Posn is a structure:
 ;;   ;   (make-posn Number Number)
 ;;   ; interpretation a point x pixels from left, y from top
+;;
+;;
+;; #1: Use a "setter" (or updater) function
+;;     - != when to use? when not to?
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -98,7 +102,8 @@
 ; Allow user to reset the dot on mouse event
 (define (reset-dot p x y me)
   (cond
-    [(string=? me "button-down") RESET]))
+    [(string=? me "button-down") RESET]
+    [else (make-posn (posn-x p) (posn-y p))]))
 
 (check-expect (reset-dot (make-posn 10 20) 5 10 "button-down") RESET)
 
@@ -106,7 +111,8 @@
 ; Posn -> Posn
 ; Move the dot x-cordinate 3 pixels on each clock tick
 (define (x+ p)
-  (make-posn (+ (posn-x p) 3) (posn-y p)))
+  (posn-up-x p (+ (posn-x p) 3)))
+  ; (make-posn (+ (posn-x p) 3) (posn-y p)))
 
 (check-expect (x+ (make-posn 10 0)) (make-posn 13 0))
 
@@ -118,6 +124,6 @@
 ;; Consumes a Posn p and a Number n
 
 (define (posn-up-x p n)
-  (make-posn n (posn-y p)))
+  (make-posn n (posn-y p)))  ; #1
 
-(check-expect (posn-up-x (make-posn 10 20) 30) (make-posn 10 30))
+(check-expect (posn-up-x (make-posn 10 20) 30) (make-posn 30 20))
