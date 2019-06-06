@@ -91,4 +91,8 @@
 ; (define (ufo-move-1 u)
 ;   (... (ufo-loc u) ... (ufo-vel u) ...))
 
-
+; (define (ufo-move u)
+;   (... (posn-x (ufo-loc u)) ...
+;    ... (posn-y (ufo-vel u)) ...
+;    ... (vel-deltax (ufo-vel u)) ...
+;    ... (vel-deltay (ufo-vel u)) ...))
