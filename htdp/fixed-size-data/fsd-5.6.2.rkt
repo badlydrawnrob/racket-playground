@@ -88,6 +88,7 @@
 (check-expect (ufo-move-1 u2)
               (make-ufo (make-posn 17 77) v2))
 
-(define (ufo-move-1 u) u)
+; (define (ufo-move-1 u)
+;   (... (ufo-loc u) ... (ufo-vel u) ...))
 
 
