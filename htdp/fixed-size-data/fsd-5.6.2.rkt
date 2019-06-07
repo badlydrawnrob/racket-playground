@@ -131,8 +131,8 @@
 (check-expect (posn+ p1 v2) (make-posn 17 77))
 
 (define (posn+ p v)
-  (make-posn (+ (posn-x (posn-loc p))
-                (vel-deltax (ufo-vel v)))
-             (+ (posn-y (ufo-loc p))
-                (vel-deltay (ufo-vel v)))))
+  (make-posn (+ (posn-x p)
+                (vel-deltax v))
+             (+ (posn-y p)
+                (vel-deltay v))))
 
