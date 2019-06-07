@@ -16,7 +16,12 @@
 ;; != ORDER MATTERS!
 ;;    - definitions should be in the correct order
 ;;
-;; #1: It helps to write the stub first (think about problem and I/O)
+;; #1: DOUBLE CHECK nested functions
+;;     - Remember to double check what's coming I/O!
+;;     - splitting up a function like this makes it easier to write
+;;     - using simpler functions :)
+;;
+;; #2: It helps to write the stub first (think about problem and I/O)
 ;;     - "making a wish" (list)
 
 (require 2htdp/universe)
@@ -115,24 +120,23 @@
 ; ----------------------------
 
 (define (ufo-move-1 u)
-  (make-ufo (posn+ (ufo-loc u) (ufo-vel u))
+  (make-ufo (posn+ (ufo-loc u) (ufo-vel u))  ; #1
             (ufo-vel u)))
 
 ; ... SPLIT OUT THE FUNCTION TO MOVE POSN WITH VELOCITY
 ; -----------------------------------------------------
-; Each function does a chunk of work, makes each
-; function EASIER TO READ
+; Each function does a chunk of work ...
+; makes each function EASIER TO READ!
 
 ; Posn Vel -> Posn
 ; adds v to p
 
-; (define (posn+ p v) p)  ; #1
+; (define (posn+ p v) p)  ; #2
 
+(check-expect (posn+ p1 v1) p2)
 (check-expect (posn+ p1 v2) (make-posn 17 77))
 
 (define (posn+ p v)
-  (make-posn (+ (posn-x p)
-                (vel-deltax v))
-             (+ (posn-y p)
-                (vel-deltay v))))
+  (make-posn (+ (posn-x p) (vel-deltax v))  ; #1
+             (+ (posn-y p) (vel-deltay v))))
 
