@@ -14,7 +14,10 @@
 ;;    - See 5.6.1
 ;;
 ;; != ORDER MATTERS!
-;;    - definitions should be in the correct order.
+;;    - definitions should be in the correct order
+;;
+;; #1: It helps to write the stub first (think about problem and I/O)
+;;     - "making a wish" (list)
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -91,8 +94,45 @@
 ; (define (ufo-move-1 u)
 ;   (... (ufo-loc u) ... (ufo-vel u) ...))
 
+
+; THIS WOULD BE TOO COMPLEX
+; DEVELOP ONE FUNCTION PER LEVEL OF NESTING
+; -----------------------------------------
 ; (define (ufo-move u)
 ;   (... (posn-x (ufo-loc u)) ...
 ;    ... (posn-y (ufo-vel u)) ...
 ;    ... (vel-deltax (ufo-vel u)) ...
 ;    ... (vel-deltay (ufo-vel u)) ...))
+
+; (define (ufo-move-1 u)
+;   (make-ufo (make-posn (+ (posn-x (ufo-loc u))
+;                           (vel-deltax (ufo-vel u)))
+;                        (+ (posn-y (ufo-loc u))
+;                           (vel-deltay (ufo-vel u))))
+;             (ufo-vel u))))
+
+; REWRITE THE UFO FUNCTION ...
+; ----------------------------
+
+(define (ufo-move-1 u)
+  (make-ufo (posn+ (ufo-loc u) (ufo-vel u))
+            (ufo-vel u)))
+
+; ... SPLIT OUT THE FUNCTION TO MOVE POSN WITH VELOCITY
+; -----------------------------------------------------
+; Each function does a chunk of work, makes each
+; function EASIER TO READ
+
+; Posn Vel -> Posn
+; adds v to p
+
+; (define (posn+ p v) p)  ; #1
+
+(check-expect (posn+ p1 v2) (make-posn 17 77))
+
+(define (posn+ p v)
+  (make-posn (+ (posn-x (posn-loc p))
+                (vel-deltax (ufo-vel v)))
+             (+ (posn-y (ufo-loc p))
+                (vel-deltay (ufo-vel v)))))
+
