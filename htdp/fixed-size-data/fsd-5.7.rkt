@@ -10,6 +10,10 @@
 ;; != ORDER MATTERS!
 ;;    - definitions should be in the correct order
 ;;
+;; != (define-struct letter) may be the wrong way to do this,
+;;    - might be better suited to a new TYPE
+;;    - or, as a "virtual" type and a simple COND function
+;;
 ;;
 ;; > If a function deals with nested structures,
 ;; > develop one function per level of nesting.
@@ -22,6 +26,14 @@
 ;;     - (equal? #false "a") returns #false
 ;;     - so moves to next line.
 ;;       - DOES NOT SEEM TO WORK the other way around!
+;;
+;; #2: This actually allows full strings ...
+;;     - Don't yet know function to compare like (char? ...)
+;;     - you'd have to add a (string-length ...) comparison
+;;
+;; #3: See below Exercise 78 for data examples
+;;     you should provide for data definitions
+;;     - @link: htdp.org/part_one.html#%28counter._data-uni._%28exercise._struct9%29%29
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -141,17 +153,58 @@
        (word-let3 word)))
 
 
+;; != Two routes for Letter:
+;; -------------------------
+
 (define-struct letter [l])
-; A letter is (make-letter [String, #false])
+; A Letter is (make-letter [String, #false])
 ; interpretation: A Letter is one of:
 ;                 - "a" ... "z"
 ;                 - #false
+
+;; ... or, a simple "virtual" Type
+;; -------------------------------
+
+; A Letter is one of:
+; - 1String "a" ... "z"
+; - #false
+
+
+;; Either way, you'd need to add checks!
+;; -------------------------------------
 (check-expect (is-letter? "f") #true)
 (check-expect (is-letter? "!") #false)
 (check-expect (is-letter? #false) #true)
+; (check-expect (is-letter? "too many chars") #false) ; #2
 
 (define (is-letter? l)
   (cond [(equal? #false l) #true]  ; #1
-        [(and (string? l) (string<=? "a" l "z")) #true]
+        [(and (string? l) (string<=? "a" l "z")) #true]  ; #2
         [else #false]))
+
+
+
+
+;; Exercise 79
+;; ===========
+;; Create examples for the following data definitions
+
+; A Color is one of:
+; - "white"
+; - "yellow"
+; - "orange"
+; - "green"
+; - "red"
+; - "blue"
+; - "black"
+
+; Color is an enumeration
+(define-struct tshirt [color size price])
+; A Tshirt is (make-tshirt Color String Float)
+(define tshirt1 (make-tshirt "white" "medium" 10.99))
+(define tshirt2 (make-tshirt "turquoise" "medium" 10.99))
+
+(define (is-color? tshirt1) #true)
+(define (is-color? tshirt2) #false)
+
 

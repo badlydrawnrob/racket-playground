@@ -16,6 +16,11 @@
 ;; != ORDER MATTERS!
 ;;    - definitions should be in the correct order
 ;;
+;;
+;; > If a function deals with nested structures,
+;; > develop one function per level of nesting.
+;;
+;;
 ;; #1: DOUBLE CHECK nested functions
 ;;     - Remember to double check what's coming I/O!
 ;;     - splitting up a function like this makes it easier to write
@@ -23,6 +28,7 @@
 ;;
 ;; #2: It helps to write the stub first (think about problem and I/O)
 ;;     - "making a wish" (list)
+;;
 
 (require 2htdp/universe)
 (require 2htdp/image)
