@@ -152,6 +152,6 @@
 
 (define (is-letter? l)
   (cond [(equal? #false l) #true]  ; #1
-        [(and (string? l) (string>=? "a" l "z")) #true]
+        [(and (string? l) (string<=? "a" l "z")) #true]
         [else #false]))
 
