@@ -1,6 +1,6 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-beginner-reader.ss" "lang")((modname fsd-5.7) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname fsd-5.7.1) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;; 5.7 The Universe of Data
 ;; ========================
 ;;
@@ -34,6 +34,9 @@
 ;; #3: See below Exercise 78 for data examples
 ;;     you should provide for data definitions
 ;;     - @link: htdp.org/part_one.html#%28counter._data-uni._%28exercise._struct9%29%29
+;;
+;; #4: You'd have to loop through colors variable (not possible in BSL)
+;;
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -181,30 +184,3 @@
   (cond [(equal? #false l) #true]  ; #1
         [(and (string? l) (string<=? "a" l "z")) #true]  ; #2
         [else #false]))
-
-
-
-
-;; Exercise 79
-;; ===========
-;; Create examples for the following data definitions
-
-; A Color is one of:
-; - "white"
-; - "yellow"
-; - "orange"
-; - "green"
-; - "red"
-; - "blue"
-; - "black"
-
-; Color is an enumeration
-(define-struct tshirt [color size price])
-; A Tshirt is (make-tshirt Color String Float)
-(define tshirt1 (make-tshirt "white" "medium" 10.99))
-(define tshirt2 (make-tshirt "turquoise" "medium" 10.99))
-
-(define (is-color? tshirt1) #true)
-(define (is-color? tshirt2) #false)
-
-
