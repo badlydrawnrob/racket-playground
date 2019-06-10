@@ -19,8 +19,9 @@
 ;;
 ;;
 ;; #1: != Should the (sqr ...) be split out?
-;; #2: != These tests are possibly written wrong
-;;        - re-read the documentation
+;; #2: != I think these tests are right
+;;        - Does "delta" mean by a floating point number?
+;;        - i.e: within 0.01 of x
 
 (require 2htdp/universe)
 (require 2htdp/image)
