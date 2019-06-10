@@ -37,8 +37,9 @@
 ;;         1String 1String -> Boolean?
 ;;       and do the (not ...) check in the main function!
 ;;
-;;    != You could possible remove (merge-letters ...)
-;;       function and replace it with just (letter->word ...)!!
+;;    != You could either use (merge-letters ...)
+;;       or just use (words->word ...) — I'm not sure which
+;;       is more wasteful!!
 
 
 (require 2htdp/universe)
@@ -168,7 +169,5 @@
 (define (compare-word w1 w2)
   (cond
     [(word-equal? w1 w2)
-     (string-append (merge-letters w1)
-                    " is the same as "
-                    (merge-letters w2))]
+     (string-append (merge-letters w1) " is equal to " (merge-letters w2))]
     [else (words->word w1 w2)]))
