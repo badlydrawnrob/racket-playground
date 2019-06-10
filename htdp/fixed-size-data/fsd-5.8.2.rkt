@@ -171,3 +171,7 @@
     [(word-equal? w1 w2)
      (string-append (merge-letters w1) " is equal to " (merge-letters w2))]
     [else (words->word w1 w2)]))
+
+; (compare-word word1 word2)
+; (compare-word word2 word2)
+; (compare-word word1 word3)
