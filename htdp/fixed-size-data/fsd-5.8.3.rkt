@@ -18,9 +18,10 @@
 ;; - TEST that motherfucker
 ;;
 ;;
-;; Try to simplify your functions for exercise 82
-;; - it may be more complicated than it needs
-;; - the task wasn't written that clearly though ...
+;; Revisited: fsd-5.8.2
+;;            - Simplify functions for exercise 82
+;;            - more complicated than the task needed
+;;              (poor instructions though)
 ;;
 ;;
 ;; #1: A nested (cond ...) seems to be the best way here
