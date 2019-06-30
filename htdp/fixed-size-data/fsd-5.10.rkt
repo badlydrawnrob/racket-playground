@@ -3,6 +3,13 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname fsd-5.10) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;; 5.10 A Graphical Editor
 ;; =======================
+;;
+;; != Should a new (make-editor ...) be made every time?
+;; != Design decision is important
+;;    - Here, we decide whether to add char to `-pre` or `-post`
+;;
+;; #1: It may be more efficient to use in (edit ...) cond?
+;;     - Could also use (not (= 0 string1))
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -66,7 +73,7 @@
   (cond
     [(key=? "left" ke) ...]
     [(key=? "right" ke) ...]
-    [(= (string-length ke) 1) ...]
+    [(= (string-length ke) 1) (add-char ed ke)]
     [(key=? "\b" ke) ...]
     [(or (key=? "\t" ke) (key=? "\r")) (render ed)]
     [else (render ed)]))
@@ -84,6 +91,33 @@
 ;; Wish list
 ;; ---------
 
+;; Auxiliary functions
+;; -------------------
+
+; String -> Boolean?
+; check if a string is empty
+(define (something? string)
+  (> (string-length string) 0))
+
+(check-expect (something? "t") #true)  ; #1
+(check-expect (something? "") #false)
+
+; String -> Char
+; Get the first letter of a string
+(define (string-first string)
+  ...)
+
+(check-expect (string-first "this") "t")
+
+
+; String -> String
+; Get the remainder of a string, removing first char
+(define (string-rest string)
+  ...)
+
+(check-expect (string-rest "this") "his")
+
+
 ; Editor -> Editor
 ; moves the editor left (if "left" ke selected)
 ; and has characters to the left
@@ -91,9 +125,27 @@
 ; Editor -> Editor
 ; moves the editor right (if "right" ke selected)
 ; and if has characters to the right
+(define (move-right ed)
+  (if (something? (editor-post ed))
+      (render (make-editor (string-append (editor-pre ed)
+                                          (string-first (editor-post ed)))
+                           (string-rest (editor-post ed))))
+      ed))  ; #2
 
+(check-expect (move-right line1) (overlay/align "left" "center"
+                                            (beside (text "thist" 11 "black")
+                                                    (rectangle 1 20 "solid" "red")
+                                                    (text "hat" 11 "black"))
+                                            (empty-scene 200 20)))
+
+              
 ; Editor -> Editor
 ; adds a character
+(define (add-char ed char)
+  (make-editor (string-append (editor-pre ed) char)
+               (editor-post ed)))
+
+(check-expect (add-char line1 " ") (make-editor "this " "that"))
 
 ; Editor -> Editor
 ; deletes a character
