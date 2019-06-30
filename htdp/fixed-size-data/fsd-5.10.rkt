@@ -28,7 +28,9 @@
 ; whose visible text is (string-append s t) with
 ; the cursor displayed between s and t
 
-(define line1 (make-editor "this" "that"))
+(define line1 (make-editor "this" "that"))  ; 1st stage
+(define line2 (make-editor "this " "that")) ; 2nd stage
+(define line3 (make-editor "this that" ""))  ; 3rd stage
 
 
 
@@ -105,7 +107,7 @@
 ; String -> Char
 ; Get the first letter of a string
 (define (string-first string)
-  ...)
+  (string-ith string 0))
 
 (check-expect (string-first "this") "t")
 
@@ -113,7 +115,7 @@
 ; String -> String
 ; Get the remainder of a string, removing first char
 (define (string-rest string)
-  ...)
+  (substring string 1))
 
 (check-expect (string-rest "this") "his")
 
@@ -130,12 +132,17 @@
       (render (make-editor (string-append (editor-pre ed)
                                           (string-first (editor-post ed)))
                            (string-rest (editor-post ed))))
-      ed))  ; #2
+      (render ed)))  ; #2
 
 (check-expect (move-right line1) (overlay/align "left" "center"
                                             (beside (text "thist" 11 "black")
                                                     (rectangle 1 20 "solid" "red")
                                                     (text "hat" 11 "black"))
+                                            (empty-scene 200 20)))
+(check-expect (move-right line3) (overlay/align "left" "center"
+                                            (beside (text "this that" 11 "black")
+                                                    (rectangle 1 20 "solid" "red")
+                                                    (text "" 11 "black"))
                                             (empty-scene 200 20)))
 
               
