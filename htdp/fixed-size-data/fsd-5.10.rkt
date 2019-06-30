@@ -33,22 +33,25 @@
 
 ; Editor -> String
 ; consume editor, output string
-(define (editor->string ed)
-  (string-append (editor-pre ed)
-                 (editor-post ed)))
+(define (editor->string func)
+  (text func 11 "black"))
 
-(check-expect (editor->string line1) "thisthat")
+(check-expect (editor->string (editor-pre line1)) (text "this" 11 "black"))
 
 
 ; Editor -> Image
 ; consumes editor and outputs a string image
 (define (render ed)
   (overlay/align "left" "center"
-                 (text (editor->string ed) 11 "black")
+                 (beside (editor->string (editor-pre ed))
+                         (rectangle 1 20 "solid" "red")
+                         (editor->string (editor-post ed)))
                  (empty-scene 200 20)))
 
 (check-expect (render line1) (overlay/align "left" "center"
-                                            (text "thisthat" 11 "black")
+                                            (beside (text "this" 11 "black")
+                                                    (rectangle 1 20 "solid" "red")
+                                                    (text "that" 11 "black"))
                                             (empty-scene 200 20)))
 
 
@@ -63,7 +66,7 @@
   (cond
     ((key=? "left" ke) ...)))
 
-(check-expect (edit line1 "left") 
+
 
 ; add any single-character
 ; if "\b" delete character to left of cursor (if any)
