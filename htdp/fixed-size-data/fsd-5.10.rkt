@@ -1,0 +1,75 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname fsd-5.10) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;; 5.10 A Graphical Editor
+;; =======================
+
+(require 2htdp/image)
+(require 2htdp/universe)
+
+;; Sample problem
+;; --------------
+;; A single line text editor
+;; - chosen approach before
+;; - alternative approach:
+;;   - count chars to left of cursor position
+
+(define-struct editor [pre post])
+; An Editor is a structure:
+;    (make-editor String String)
+; interpretation (make-editor s t) describes an editor
+; whose visible text is (string-append s t) with
+; the cursor displayed between s and t
+
+(define line1 (make-editor "this" "that"))
+
+
+
+;; Exercise 83
+;; ===========
+;; I'm splitting out the functions as much as possible
+;; seperation of concerns ...
+
+
+; Editor -> String
+; consume editor, output string
+(define (editor->string ed)
+  (string-append (editor-pre ed)
+                 (editor-post ed)))
+
+(check-expect (editor->string line1) "thisthat")
+
+
+; Editor -> Image
+; consumes editor and outputs a string image
+(define (render ed)
+  (overlay/align "left" "center"
+                 (text (editor->string ed) 11 "black")
+                 (empty-scene 200 20)))
+
+(check-expect (render line1) (overlay/align "left" "center"
+                                            (text "thisthat" 11 "black")
+                                            (empty-scene 200 20)))
+
+
+
+;; Exercise 84
+;; ===========
+;; Edits the editor
+
+; Editor -> Editor
+; allows the user to change text with keyevent
+(define (edit ed ke)
+  (cond
+    ((key=? "left" ke) ...)))
+
+(check-expect (edit line1 "left") 
+
+; add any single-character
+; if "\b" delete character to left of cursor (if any)
+; ignore "\t" key or "\r" key
+
+; if "left" move cursor one char left (if any)
+; if "right" move one char right (if any)
+
+; ignore other similar KeyEvents
