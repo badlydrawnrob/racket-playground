@@ -64,7 +64,12 @@
 ; allows the user to change text with keyevent
 (define (edit ed ke)
   (cond
-    ((key=? "left" ke) ...)))
+    [(key=? "left" ke) ...]
+    [(key=? "right" ke) ...]
+    [(= (string-length ke) 1) ...]
+    [(key=? "\b" ke) ...]
+    [(or (key=? "\t" ke) (key=? "\r")) (render ed)]
+    [else (render ed)]))
 
 
 
@@ -72,7 +77,26 @@
 ; if "\b" delete character to left of cursor (if any)
 ; ignore "\t" key or "\r" key
 
-; if "left" move cursor one char left (if any)
-; if "right" move one char right (if any)
 
 ; ignore other similar KeyEvents
+
+
+;; Wish list
+;; ---------
+
+; Editor -> Editor
+; moves the editor left (if "left" ke selected)
+; and has characters to the left
+
+; Editor -> Editor
+; moves the editor right (if "right" ke selected)
+; and if has characters to the right
+
+; Editor -> Editor
+; adds a character
+
+; Editor -> Editor
+; deletes a character
+  
+
+
