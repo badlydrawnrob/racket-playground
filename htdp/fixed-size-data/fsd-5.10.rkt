@@ -80,11 +80,11 @@
 ; allows the user to change text with keyevent
 (define (edit ed ke)
   (cond
-    [(too-full? ed) ed] ; too many characters added
     [(key=? "left" ke) (move-left ed)]
     [(key=? "right" ke) (move-right ed)]
     [(key=? "\b" ke) (del-char ed)] ; delete char to left of cursor (if any)
     [(or (key=? "\t" ke) (key=? "\r" ke)) ed] ; ignore tab or return
+    [(too-full? ed) ed] ; too many characters added?
     [(= (string-length ke) 1) (add-char ed ke)] ; add any single char
     [else ed])) ; ignore other KeyEvents
 
