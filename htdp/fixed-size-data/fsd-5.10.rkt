@@ -196,3 +196,11 @@
 
 
 
+
+;; Now ... run the function
+;; ------------------------
+
+(define (run ed)
+  (big-bang ed
+    [to-draw render]
+    [on-key edit]))
