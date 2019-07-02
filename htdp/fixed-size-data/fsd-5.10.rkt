@@ -31,6 +31,7 @@
 (define line1 (make-editor "this" "that"))  ; 1st stage
 (define line2 (make-editor "this " "that")) ; 2nd stage
 (define line3 (make-editor "this that" ""))  ; 3rd stage
+(define line4 (make-editor "" "this that"))  ; 3rd stage
 
 
 
@@ -73,21 +74,13 @@
 ; allows the user to change text with keyevent
 (define (edit ed ke)
   (cond
-    [(key=? "left" ke) ...]
-    [(key=? "right" ke) ...]
-    [(= (string-length ke) 1) (add-char ed ke)]
-    [(key=? "\b" ke) ...]
-    [(or (key=? "\t" ke) (key=? "\r")) (render ed)]
-    [else (render ed)]))
+    [(key=? "left" ke) (move-left ed)]
+    [(key=? "right" ke) (move-right ed)]
+    [(= (string-length ke) 1) (add-char ed ke)] ; add any single char
+    [(key=? "\b" ke) (del-char ed)] ; delete char to left of cursor (if any)
+    [(or (key=? "\t" ke) (key=? "\r")) (render ed)] ; ignore tab or return
+    [else (render ed)])) ; ignore other KeyEvents
 
-
-
-; add any single-character
-; if "\b" delete character to left of cursor (if any)
-; ignore "\t" key or "\r" key
-
-
-; ignore other similar KeyEvents
 
 
 ;; Wish list
@@ -106,23 +99,57 @@
 
 ; String -> Char
 ; Get the first letter of a string
-(define (string-first string)
-  (string-ith string 0))
+(define (string-first s)
+  (string-ith s 0))
 
 (check-expect (string-first "this") "t")
 
-
 ; String -> String
 ; Get the remainder of a string, removing first char
-(define (string-rest string)
-  (substring string 1))
+(define (string-rest s)
+  (substring s 1))
 
 (check-expect (string-rest "this") "his")
+
+
+; String -> Char
+; Get the last letter of a string
+(define (string-last s)
+  (string-ith s (- (string-length s) 1)))
+
+(check-expect (string-last "this") "s")
+
+; String -> Char
+; Get the remainder of a string, removing last char
+(define (string-remove-last s)
+  (substring s 0 (- (string-length s) 1)))
+
+(check-expect (string-remove-last "loser") "lose")
+
 
 
 ; Editor -> Editor
 ; moves the editor left (if "left" ke selected)
 ; and has characters to the left
+(define (move-left ed)
+  (if (something? (editor-pre ed))
+      (render (make-editor (string-remove-last (editor-pre ed))
+                           (string-append (string-last (editor-pre ed))
+                                          (editor-post ed))))
+      (render ed)))  ; #2
+
+
+(check-expect (move-left line1) (overlay/align "left" "center"
+                                            (beside (text "thi" 11 "black")
+                                                    (rectangle 1 20 "solid" "red")
+                                                    (text "sthat" 11 "black"))
+                                            (empty-scene 200 20)))
+(check-expect (move-left line4) (overlay/align "left" "center"
+                                            (beside (text "" 11 "black")
+                                                    (rectangle 1 20 "solid" "red")
+                                                    (text "this that" 11 "black"))
+                                            (empty-scene 200 20)))
+
 
 ; Editor -> Editor
 ; moves the editor right (if "right" ke selected)
@@ -133,6 +160,7 @@
                                           (string-first (editor-post ed)))
                            (string-rest (editor-post ed))))
       (render ed)))  ; #2
+
 
 (check-expect (move-right line1) (overlay/align "left" "center"
                                             (beside (text "thist" 11 "black")
@@ -145,7 +173,7 @@
                                                     (text "" 11 "black"))
                                             (empty-scene 200 20)))
 
-              
+
 ; Editor -> Editor
 ; adds a character
 (define (add-char ed char)
@@ -154,8 +182,17 @@
 
 (check-expect (add-char line1 " ") (make-editor "this " "that"))
 
+
 ; Editor -> Editor
 ; deletes a character
-  
+(define (del-char ed)
+  (if (something? (editor-pre ed))
+      (make-editor (string-remove-last (editor-pre ed))
+                   (editor-post ed))
+      ed))
+
+(check-expect (del-char line1) (make-editor "thi" "that"))
+(check-expect (del-char line4) (make-editor "" "this that"))
+
 
 
