@@ -7,6 +7,7 @@
 ;; != Should a new (make-editor ...) be made every time?
 ;; != Design decision is important
 ;;    - Here, we decide whether to add char to `-pre` or `-post`
+;;    - It really counts when you get deeper into the code
 ;; != Order matters!
 ;;    - conditionals seem to be truthy, so place your important
 ;;      checks (del-char ...) BEFORE catch alls (add-char ...)
@@ -95,22 +96,6 @@
 
 ;; Auxiliary functions
 ;; -------------------
-
-; Editor -> Boolean?
-; check if background is too full
-(define (too-full? ed)
-  (>= (string-length (string-append (editor-pre ed) (editor-post ed)))
-          40))
-
-(define line5 (make-editor "aaaaaaaaaaaaaaaaaaaa" "aaaaaaaaaaaaaaaaaaaa"))
-(define line6 (make-editor "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ""))
-(define line7 (make-editor "124" "56"))
-
-(check-expect (too-full? line5) #true)
-(check-expect (too-full? line6) #true)
-(check-expect (too-full? line7) #false)
-      
-         
 
 ; String -> Boolean?
 ; check if a string is empty
@@ -204,10 +189,30 @@
 
 
 
+;; Exercise 85
+;; -----------
 ;; Now ... run the function
-;; ------------------------
 
 (define (run ed)
   (big-bang ed
     [to-draw render]
     [on-key edit]))
+
+
+
+;; Exercise 86
+;; -----------
+
+; Editor -> Boolean?
+; check if background is too full
+(define (too-full? ed)
+  (>= (string-length (string-append (editor-pre ed) (editor-post ed)))
+          40))
+
+(define line5 (make-editor "aaaaaaaaaaaaaaaaaaaa" "aaaaaaaaaaaaaaaaaaaa"))
+(define line6 (make-editor "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ""))
+(define line7 (make-editor "124" "56"))
+
+(check-expect (too-full? line5) #true)
+(check-expect (too-full? line6) #true)
+(check-expect (too-full? line7) #false)
