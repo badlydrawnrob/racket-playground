@@ -10,6 +10,9 @@
 ;;
 ;; #1: It may be more efficient to use in (edit ...) cond?
 ;;     - Could also use (not (= 0 string1))
+;; #2: You're always passing a (make-editor ...) structure around
+;;     - It get's (render ..) in ONE place
+;;     - In the to-draw condition (big-bang ...)
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -78,8 +81,8 @@
     [(key=? "right" ke) (move-right ed)]
     [(= (string-length ke) 1) (add-char ed ke)] ; add any single char
     [(key=? "\b" ke) (del-char ed)] ; delete char to left of cursor (if any)
-    [(or (key=? "\t" ke) (key=? "\r")) (render ed)] ; ignore tab or return
-    [else (render ed)])) ; ignore other KeyEvents
+    [(or (key=? "\t" ke) (key=? "\r")) ed] ; ignore tab or return
+    [else ed])) ; ignore other KeyEvents
 
 
 
@@ -133,22 +136,14 @@
 ; and has characters to the left
 (define (move-left ed)
   (if (something? (editor-pre ed))
-      (render (make-editor (string-remove-last (editor-pre ed))
-                           (string-append (string-last (editor-pre ed))
-                                          (editor-post ed))))
-      (render ed)))  ; #2
+      (make-editor (string-remove-last (editor-pre ed))
+                   (string-append (string-last (editor-pre ed))
+                                  (editor-post ed)))
+      ed))  ; #2
 
 
-(check-expect (move-left line1) (overlay/align "left" "center"
-                                            (beside (text "thi" 11 "black")
-                                                    (rectangle 1 20 "solid" "red")
-                                                    (text "sthat" 11 "black"))
-                                            (empty-scene 200 20)))
-(check-expect (move-left line4) (overlay/align "left" "center"
-                                            (beside (text "" 11 "black")
-                                                    (rectangle 1 20 "solid" "red")
-                                                    (text "this that" 11 "black"))
-                                            (empty-scene 200 20)))
+(check-expect (move-left line1) (make-editor "thi" "sthat"))
+(check-expect (move-left line4) (make-editor "" "this that"))
 
 
 ; Editor -> Editor
@@ -156,22 +151,14 @@
 ; and if has characters to the right
 (define (move-right ed)
   (if (something? (editor-post ed))
-      (render (make-editor (string-append (editor-pre ed)
-                                          (string-first (editor-post ed)))
-                           (string-rest (editor-post ed))))
-      (render ed)))  ; #2
+      (make-editor (string-append (editor-pre ed)
+                                  (string-first (editor-post ed)))
+                   (string-rest (editor-post ed)))
+      ed))  ; #2
 
 
-(check-expect (move-right line1) (overlay/align "left" "center"
-                                            (beside (text "thist" 11 "black")
-                                                    (rectangle 1 20 "solid" "red")
-                                                    (text "hat" 11 "black"))
-                                            (empty-scene 200 20)))
-(check-expect (move-right line3) (overlay/align "left" "center"
-                                            (beside (text "this that" 11 "black")
-                                                    (rectangle 1 20 "solid" "red")
-                                                    (text "" 11 "black"))
-                                            (empty-scene 200 20)))
+(check-expect (move-right line1) (make-editor "thist" "hat"))
+(check-expect (move-right line3) (make-editor "this that" ""))
 
 
 ; Editor -> Editor
