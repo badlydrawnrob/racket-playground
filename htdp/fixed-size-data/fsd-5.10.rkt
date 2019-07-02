@@ -7,6 +7,9 @@
 ;; != Should a new (make-editor ...) be made every time?
 ;; != Design decision is important
 ;;    - Here, we decide whether to add char to `-pre` or `-post`
+;; != Order matters!
+;;    - conditionals seem to be truthy, so place your important
+;;      checks (del-char ...) BEFORE catch alls (add-char ...)
 ;;
 ;; #1: It may be more efficient to use in (edit ...) cond?
 ;;     - Could also use (not (= 0 string1))
@@ -34,7 +37,7 @@
 (define line1 (make-editor "this" "that"))  ; 1st stage
 (define line2 (make-editor "this " "that")) ; 2nd stage
 (define line3 (make-editor "this that" ""))  ; 3rd stage
-(define line4 (make-editor "" "this that"))  ; 3rd stage
+(define line4 (make-editor "" "this that"))  ; 4rd stage
 
 
 
@@ -77,6 +80,7 @@
 ; allows the user to change text with keyevent
 (define (edit ed ke)
   (cond
+    [(too-full? ed) ed] ; too many characters added
     [(key=? "left" ke) (move-left ed)]
     [(key=? "right" ke) (move-right ed)]
     [(key=? "\b" ke) (del-char ed)] ; delete char to left of cursor (if any)
@@ -91,6 +95,22 @@
 
 ;; Auxiliary functions
 ;; -------------------
+
+; Editor -> Boolean?
+; check if background is too full
+(define (too-full? ed)
+  (>= (string-length (string-append (editor-pre ed) (editor-post ed)))
+          40))
+
+(define line5 (make-editor "aaaaaaaaaaaaaaaaaaaa" "aaaaaaaaaaaaaaaaaaaa"))
+(define line6 (make-editor "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" ""))
+(define line7 (make-editor "124" "56"))
+
+(check-expect (too-full? line5) #true)
+(check-expect (too-full? line6) #true)
+(check-expect (too-full? line7) #false)
+      
+         
 
 ; String -> Boolean?
 ; check if a string is empty
