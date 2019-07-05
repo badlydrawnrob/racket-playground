@@ -20,8 +20,9 @@
 (require 2htdp/image)
 (require 2htdp/universe)
 
-;; Sample problem
-;; --------------
+
+;; Exercise 87
+;; ===========
 ;; A single line text editor
 ;; - count number of chars from cursor
 
@@ -35,12 +36,6 @@
 (define line2 (make-editor "this that" 5)) ; cursor at second "t"
 (define line3 (make-editor "this that" 9)) ; cursor at end
 (define line4 (make-editor "this that" 0)) ; cursor at start
-
-
-
-;; Exercise 83
-;; ===========
-;; Split out the functions as much as possible ...
 
 
 ; Editor -> String
@@ -76,10 +71,6 @@
 
 
 
-;; Exercise 84
-;; ===========
-;; Edits the editor
-
 ; Editor -> Editor
 ; allows the user to change text with keyevent
 (define (edit ed ke)
@@ -94,11 +85,8 @@
 
 
 
-;; Wish list
-;; ---------
 
-;; Auxiliary functions
-;; -------------------
+
 
 ; String -> Boolean?
 ; check if a string is empty
@@ -160,24 +148,8 @@
 (check-expect (del-char line4) (make-editor "this that" 0))
 
 
-
-
-;; Exercise 85
-;; -----------
-;; Now ... run the function
-
-(define (run ed)
-  (big-bang ed
-    [to-draw render]
-    [on-key edit]))
-
-
-
-;; Exercise 86
-;; -----------
-
 ; Editor -> Boolean?
-; check if background is too full
+; check if too many characters to fit on screen
 (define (too-full? ed)
   (>= (string-length (editor-str ed)) 40))
 
@@ -186,3 +158,11 @@
 
 (check-expect (too-full? line5) #true)
 (check-expect (too-full? line7) #false)
+
+
+
+
+(define (run ed)
+  (big-bang ed
+    [to-draw render]
+    [on-key edit]))
