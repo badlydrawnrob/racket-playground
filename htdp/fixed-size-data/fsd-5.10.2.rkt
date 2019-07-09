@@ -17,6 +17,8 @@
 ;; != See: https://bit.ly/2XLxgRz for a refresher on difference
 ;;         between `cond` and `if` (latter for ONLY two possiblities)
 ;;
+;; != How often should you check for (something? ...) and where/when?
+;;
 ;; #1: substring should give the correct result
 ;; #2: now, you can just increase/decrease the number!
 ;;     - you could also use `add1` function
@@ -65,7 +67,7 @@
 ; Editor -> String
 ; split to the left of the cursor
 (define (editor->left ed)
-  (substring (editor-str ed) 0 (editor-num ed)))
+  (substring (editor-str ed) 0 (editor-num ed)))  ; !=
 
 ; Editor -> String
 ; split to the right of the cursor
