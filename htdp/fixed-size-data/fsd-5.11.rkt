@@ -5,6 +5,10 @@
 ;; ======================
 ;;
 ;; != Constants should really be `graphic` and `world`
+;; != Utility functions should pass values (not instances)
+;; != Repeating the (make-vcat ...) function a lot here
+;; != Not sure if conflating two values in (move-cat ...) is a bad idea?
+;;    + probably split out into TWO conditional functions?
 ;;
 ;; #1: Start the animation again
 ;;     != I think you only need to "make a vcat" in this one place?
@@ -45,11 +49,30 @@
 (define SAD-CAT (make-vcat 0 SAD))
 
 
+
+
+;; RENDER CAT
+;; ====================
+;; This is passed to #3
+;; ====================
+
 ;; Exercise 89
 ;; -----------
 ;; Recycle previous exercise
 ;; and add a universe
 
+
+; VCat -> Image
+; render the cat on the background
+; render the happiness gauge, too
+(define (render-cat vc)
+  (place-image
+    CAT
+    (vcat-pos vc) Y-HEIGHT
+    (place-image
+      (happiness vc)
+      HEIGHT X-GAUGE
+      BACKGROUND)))
 
 ; VCat -> Image
 ; render the happiness gauge
@@ -60,36 +83,52 @@
     (rectangle 10 HEIGHT "solid" "gray")))
 
 
-; VCat -> Image
-; render the cat on the background
-; render the happiness gauge, too
-(define (render-background vc)
-  (place-image
-    CAT
-    (vcat-pos vc) Y-HEIGHT
-    (place-image
-      (happiness vc)
-      HEIGHT X-GAUGE
-      BACKGROUND)))
-  
+
+
+
+
+;; UTILITY FUNCTIONS
+;; =================
+
+; VCat -> Boolean?
+; is the figure between 0-100?
+(define (range? num)
+  (and (> num 0) (<= num 100))) ; !=
+
+(check-expect (range? (+ HAPPY 1)) #false)
+(check-expect (range? HAPPY) #true)
+(check-expect (range? MEDIUM) #true)
+(check-expect (range? SAD) #false)
+
+
+
+
+
+
+;; MOVING THE CAT
+;; ====================
+;; This is passed to #1
+;; ====================
 
 ; VCat -> VCat
 ; move the cat by 3px for each clock tick
-; reduce the happiness for each clock tick
-(define (render vc)
-  (make-vcat (move-cat vs) (happy-))  ; #1
-
-; VCat -> VCat
-; move the cat by 3px for each clock tick
-(define (move-cat ws)
+; move the happiness level down per click
+(define (move-cat vc)
   (cond
-    [(< ws BACKGROUND-WIDTH) (+ ws 3)]
+    [(< (vcat-pos vc) BACKGROUND-WIDTH) (+ (vcat-pos vc) 3)]
     [else 0]))
 
-(check-expect (move-cat 0) 3)
-(check-expect (move-cat BACKGROUND-WIDTH) (make-vcat 0 0))
+(check-expect (move-cat HAP-CAT) (make-vcat 3 99))
+(check-expect (move-cat (make-vcat BACKGROUND-WIDTH HAPPY)) (make-vcat 0 99))
+(check-expect (move-cat SAD-CAT) (make-vcat 3 0))
 
 
+
+
+;; MAKING CAT HAPPY
+;; ====================
+;; This is passed to #2
+;; ====================
 
 ; VCat -> VCat
 ; increase or decrease the happiness
@@ -99,31 +138,27 @@
   (cond
     [(key=? "up" vc) (more-happy vc)]
     [(key=? "down" vc) (more-happy vc)]
-    [else (make-cat (vcat-pos vc) (vcat-happy vc))]))
+    [else (make-vcat (vcat-pos vc) (vcat-happy vc))]))
 
 
-; VCat -> Boolean?
-; is the figure between 0-100?
-(define (range? vc)
-  (and (> 0 (vcat-happy vc)) (<= (vcat-happy vc) 100)))
-
-(check-expect (happy? (+ HAPPY 1)) #false)
-(check-expect (happy? HAPPY) #true)
-(check-expect (happy? MEDIUM) #true)
-(check-expect (happy? SAD) #false)
-
-                
 ; VCat -> VCat
 ; petting or feeding the cat makes it happy
 ; - it can only be 0—100
 (define (more-happy vc)
   (cond
-    [(range? (vcat vc)) (make-vcat (vcat-pos vc) (+ (vcat-happy vc) 1))]
-    [(make-vcat (vcat-pos vc) (vcat-happy vc))]))
+    [(range? (vcat-happy vc)) (make-vcat (vcat-pos vc) (+ (vcat-happy vc) 1))]
+    [else (make-vcat (vcat-pos vc) (vcat-happy vc))]))
 
 (check-expect (pet-cat HAP-CAT) (make-vcat 0 99))
 (check-expect (pet-cat MID-CAT) (make-vcat 0 51))
 (check-expect (pet-cat SAD-CAT) SAD-CAT)
+
+
+
+
+
+;; LAUNCH PROGRAM
+;; ==============
 
 
 ; VCat -> VCat
@@ -132,6 +167,6 @@
 ; - returns a (make-vcat ...)
 (define (cat-prog vc)
   (big-bang vc
-    [on-tick move-cat]
-    [on-key happy-level]
-    [to-draw render-cat]))
+    [on-tick move-cat]     ; #1
+    [on-key happy-level]   ; #2
+    [to-draw render-cat])) ; #3
