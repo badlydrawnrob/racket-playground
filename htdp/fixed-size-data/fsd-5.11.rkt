@@ -119,7 +119,7 @@
   (cond
     [(key=? ke "up") (more-happy vc)] ; pet
     [(key=? ke "down") (more-happy vc)] ; feed
-    [else (make-vcat (vcat-pos vc) (vcat-happy vc))]))              
+    [else vc]))              
 
 ; VCat -> VCat
 ; increase happiness by 1
