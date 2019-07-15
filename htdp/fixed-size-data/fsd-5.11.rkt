@@ -9,6 +9,12 @@
 ;;    - everything else passes raw values
 ;;
 ;; != Constants should really be `graphic` and `world`
+;;
+;; != Utility functions have tests:
+;;    - do parent functions need them, too?
+;;    - some of parent functions only (make-vcat ...)
+;;
+;; Ex. 88 -> 90
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -47,12 +53,6 @@
 
 
 
-;; Exercise 89
-;; -----------
-;; Recycle previous exercise
-;; and add a universe
-
-
 ; Cat -> Image
 ; render the cat on the background
 ; render the happiness gauge, too
@@ -64,14 +64,6 @@
 
 
 
-
-;; Wish list
-;; ---------
-
-; tock function
-; - make cat
-; - move cat
-; - reduce happiness
 
 ; VCat -> VCat
 ; basic shell for structure instance
@@ -105,16 +97,8 @@
 
 
 
-; render function
-; - image
-
-
-
-; VCat -> VCat
+; VCat KeyEvent -> VCat
 ; pet or feed the cat for more happiness
-; - "up"
-; - "down"
-; - nothing
 (define (happiness vc ke)
   (cond
     [(key=? ke "up") (more-happy vc)] ; pet
@@ -123,17 +107,31 @@
 
 ; VCat -> VCat
 ; increase happiness by 1
+; unless it's already at 100
 (define (more-happy vc)
-  (make-vcat (vcat-pos vc) (+ (vcat-happy vc) 1.0)))
+  (cond
+    [(happy? (vcat-happy vc)) vc]
+    [else (make-vcat (vcat-pos vc) (+ (vcat-happy vc) 1.0))]))
 
-; unhappy?
+; VCat -> Boolean
+; Check if the cat is full happy
+(define (happy? num)
+  (>= num 100))
+
+(check-expect (happy? 20) #false)
+(check-expect (happy? 100) #true)
 
 
 
 
+; VCat -> Boolean
+; Check if the cat is unhappy
+(define (unhappy? vc)
+  (<= (vcat-happy vc) 0.0))
 
-;; LAUNCH PROGRAM
-;; ==============
+
+
+
 
 
 ; VCat -> VCat
@@ -142,6 +140,7 @@
 ; - returns a (make-vcat ...)
 (define (cat-prog vc)
   (big-bang vc
-    [on-tick tock]
-    [on-key ...]
-    [to-draw ...]))
+    [on-tick tock] ; VCat -> VCat
+    [to-draw render] ; VCat -> Image
+    [on-key happiness] ; VCat KeyEvent -> VCat
+    [stop-when unhappy?])) ; VCat -> Boolean?
