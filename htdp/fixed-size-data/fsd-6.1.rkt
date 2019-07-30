@@ -3,13 +3,23 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname fsd-6.1) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;; 6. Itemizations and Structures
 ;; ==============================
+;; Remember, a data definition represents the state of the world;
+;; it also describes all possible pieces of data, driven by events.
+;; The way we're describing our game is:
+;;
+;; - TAKING AIM or FIRED (state, keyevent)
+;; - Component parts (ufo, tank, missile)
+;;   - we could've just used ONE game structure
+;;     (with missile #false or Posn)
+;;
 ;;
 ;; != See active vs passive voice: https://bit.ly/2Gx2HoQ
 ;;
-;; != You could use a Posn, for a 2d game ...
-;;    I'm just making a 1d game here.
-;;
 ;; != You have to adjust Posn depending on (image ...) size
+;;
+;; #1: An itemization can also be a structure!
+;;
+;; #2: Could you avoid nested functions here somehow?
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -30,6 +40,7 @@
 
 (define UPOS 10)
 (define TPOS (- HEIGHT 10))
+(define TSPEED 3)
 
 
 ; Graphical constants
@@ -48,8 +59,8 @@
   (triangle (/ WIDTH 30) "solid" "green"))
 
 
-; Types
-; -----
+; Helpers
+; -------
 
 ; A YPOS is a range (from top of BACKGROUND)
 ; - range[0, HEIGHT]
@@ -66,6 +77,93 @@
 
 
 
+;; Data definitions: types and structures
+;; ======================================
+
+; A UFO is a Posn
+; interpretation (make-posn x y) is the UFO's location
+; (using the top-down, left-to-right convention)
+; > moves down only
+
+
+(define-struct tank [loc vel])
+; A Tank is a structure:
+;   (make-tank Number Number)
+; interpretation (make-tank x dx) specifies the position:
+; (x, HEIGHT) and the tank's speed: dx pixels/tick
+; > moves left-to-right
+
+; A Missile is a Posn
+; interpretation (make-posn x y) is the missile's place
+; > moves up when fired
+
+
+;; A SIGS (space invader game) is one of:
+;; - (make-aim UFO Tank)
+;; - (make-fired UFO Tank Missile)
+
+(define-struct aim [ufo tank])          ; #1
+; A game is a structure
+;   (make-game YPOS XPOS Posn)
+; See Types above
+
+(define-struct fired [ufo tank missile])  ; #1
+; A game is a structure
+;   (make-game YPOS XPOS Posn)
+; See Types above
+
+(define SCENE1 (make-aim (make-posn UPOS YTOP)
+                         (make-tank XLEFT TSPEED)))
+(define SCENE2 (make-fired (make-posn UPOS YMIDDLE)
+                           (make-tank XMIDDLE TSPEED)
+                           (make-posn XMIDDLE YMIDDLE)))
+(define SCENE3 (make-fired (make-posn UPOS YBOTTOM)
+                           (make-tank XMIDDLE TSPEED)
+                           (make-posn XMIDDLE YTOP)))
+
+
+
+
+;; Our functions
+;; =============
+
+; Game -> Image
+; Depending on state, render the game
+(define (render sigs)
+  (cond
+    [... (render-aim ...)]
+    [... (render-fired ...)]))
+
+; Game -> Image
+; render the SIGS aim state
+(define (render-aim aim)
+  (place-image
+   UFO (posn-x (aim-ufo aim)) (posn-y (aim-ufo aim))  ; #2
+   (place-image
+    TANK (tank-loc (aim-tank aim)) TPOS
+    BACKGROUND)))
+
+; Game -> Image
+; render the SIGS fired state
+(define (render-fired fired)
+  (place-image
+   UFO (posn-x (fired-ufo fired)) (posn-y (fired-ufo fired))  ; #2
+   (place-image
+    TANK (tank-loc (fired-tank fired)) TPOS
+    (place-image
+     MISSILE (posn-x (fired-missile fired)) (posn-y (fired-missile fired))
+     BACKGROUND))))
+
+
+
+
+;; Utility functions
+;; -----------------
+
+
+
+
+
 ;; Our world
 ;; =========
 
@@ -76,42 +174,6 @@
 ;    [on-key commands]))
 
 
-
-;; Our structure
-;; =============
-
-(define-struct game [ufo tank missile])
-; A game is a structure
-;   (make-game YPOS XPOS Posn)
-; A ufo is a YPOS (moving down)
-; A tank is an XPOS (moving left and right)
-; A missile is a POSN (moving up)
-
-(define SCENE1 (make-game UPOS XLEFT XLEFT))
-(define SCENE2 (make-game YMIDDLE XMIDDLE XMIDDLE))
-(define SCENE3 (make-game YBOTTOM XRIGHT XRIGHT))
-
-
-
-;; Our functions
-;; =============
-
-; Game -> Image
-; render the game
-; - for now, hide missile behind tank
-(define (render game)
-  (place-image
-   UFO UPOS (game-ufo game)
-   (place-image
-    TANK (game-tank game) TPOS
-    (place-image
-      MISSILE (* (game-missile game) 1) TPOS
-      BACKGROUND))))
-
-
-
-;; Utility functions
-;; -----------------
 
 
 
