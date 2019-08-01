@@ -13,11 +13,15 @@
 ;;     (with missile #false or Posn)
 ;;
 ;;
+;; != Too many constants might make things more confusing
+;;
 ;; != See active vs passive voice: https://bit.ly/2Gx2HoQ
 ;;
 ;; != You have to adjust Posn depending on (image ...) size
 ;;
 ;; #1: An itemization can also be a structure!
+;;     - Here, you're describing both the state of the game
+;;     - As well as the structure (and it's Types)
 ;;
 ;; #2: Could you avoid nested functions here somehow?
 
@@ -79,6 +83,8 @@
 
 ;; Data definitions: types and structures
 ;; ======================================
+;; Our main game structure (#1) is actually
+;; an itemization!
 
 ; A UFO is a Posn
 ; interpretation (make-posn x y) is the UFO's location
@@ -102,7 +108,7 @@
 ;; - (make-aim UFO Tank)
 ;; - (make-fired UFO Tank Missile)
 
-(define-struct aim [ufo tank])          ; #1
+(define-struct aim [ufo tank])            ; #1
 ; A game is a structure
 ;   (make-game YPOS XPOS Posn)
 ; See Types above
@@ -116,9 +122,9 @@
                          (make-tank XLEFT TSPEED)))
 (define SCENE2 (make-fired (make-posn UPOS YMIDDLE)
                            (make-tank XMIDDLE TSPEED)
-                           (make-posn XMIDDLE YMIDDLE)))
+                           (make-posn XMIDDLE TPOS)))
 (define SCENE3 (make-fired (make-posn UPOS YBOTTOM)
-                           (make-tank XMIDDLE TSPEED)
+                           (make-tank XMIDDLE (* TSPEED -1))
                            (make-posn XMIDDLE YTOP)))
 
 
@@ -127,31 +133,32 @@
 ;; Our functions
 ;; =============
 
-; Game -> Image
-; Depending on state, render the game
-(define (render sigs)
+; SIGS -> Image
+; adds TANK, UFO, and possibly MISSILE to
+; the BACKGROUND scene
+(define (render s)
   (cond
-    [... (render-aim ...)]
-    [... (render-fired ...)]))
+    [(aim? s) (render-aim s)]
+    [(fired? s) (render-fired s)]))
 
-; Game -> Image
+; SIGS -> Image
 ; render the SIGS aim state
-(define (render-aim aim)
+(define (render-aim s)
   (place-image
-   UFO (posn-x (aim-ufo aim)) (posn-y (aim-ufo aim))  ; #2
+   UFO (posn-x (aim-ufo s)) (posn-y (aim-ufo s))  ; #2
    (place-image
-    TANK (tank-loc (aim-tank aim)) TPOS
+    TANK (tank-loc (aim-tank s)) TPOS
     BACKGROUND)))
 
-; Game -> Image
+; SIGS -> Image
 ; render the SIGS fired state
-(define (render-fired fired)
+(define (render-fired s)
   (place-image
-   UFO (posn-x (fired-ufo fired)) (posn-y (fired-ufo fired))  ; #2
+   UFO (posn-x (fired-ufo s)) (posn-y (fired-ufo s))  ; #2
    (place-image
-    TANK (tank-loc (fired-tank fired)) TPOS
+    TANK (tank-loc (fired-tank s)) TPOS
     (place-image
-     MISSILE (posn-x (fired-missile fired)) (posn-y (fired-missile fired))
+     MISSILE (posn-x (fired-missile s)) (posn-y (fired-missile s))
      BACKGROUND))))
 
 
