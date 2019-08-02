@@ -154,11 +154,14 @@
 ; the BACKGROUND scene
 (define (render s)
   (cond
-    [(aim? s) (tank-render (aim-tank s)
-                           (ufo-render (aim-ufo s) BACKGROUND))]  ; #2a
-    [(fired? s) (missile-render (fired-missile s)
-                                (tank-render (fired-tank s)
-                                             (ufo-render (fired-ufo s) BACKGROUND)))]))
+    [(aim? s)
+     (tank-render (aim-tank s)
+                  (ufo-render (aim-ufo s) BACKGROUND))]  ; #2a
+    [(fired? s)
+     (missile-render (fired-missile s)
+                     (tank-render (fired-tank s)
+                                  (ufo-render (fired-ufo s)
+                                              BACKGROUND)))]))
 
 
 ; Tank Image -> Image
