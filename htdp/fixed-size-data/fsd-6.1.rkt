@@ -314,7 +314,7 @@
 ;    [on-tick tock]
 ;    [to-draw render]
 ;    [on-key commands]
-;    [stop-when si-game-over?]))
+;    [stop-when si-game-over? si-render-final]))
 
 
 
