@@ -23,11 +23,13 @@
 ;;     - Here, you're describing both the state of the game
 ;;     - As well as the structure (and it's Types)
 ;;
-;; #2: Rather than passing the whole SIGS through to (render- ...)
-;;     which currently has nested functions, we make it easier on
-;;     ourselves and pass through our UFO, TANK, MISSILE objects only.
+;; #2: Avoid nested functions more than one level deep!
+;;     Pass through the UFO, TANK, MISSILE to your auxiliary
+;;     functions ... makes life easier :)
 ;;
-;; #3: Could you avoid nested functions here somehow?
+;; #3: Try to avoid nested functions where possible (see #2)
+;;     - rather than passing the whold SIGS struct to the render
+;;       functions, we only pass it's objects (UFO, TANK, MISSILE)
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -145,34 +147,29 @@
 ; the BACKGROUND scene
 (define (render s)
   (cond
-    [(aim? s) (render-aim s)]
-    [(fired? s) (render-fired s)]))
-
-; #2
-;(define (render s)
-;  (cond
-;    [(aim? s) (... (aim-tank s) ... (aim-ufo s) ...)]
-;    [(fired? s) (... (fired-tank s) ... (fired-ufo s)
-;                     ... (fired-missile s) ...)]))
+    [(aim? s) (render-aim (aim-tank s) (aim-ufo s))]  ; #2
+    [(fired? s) (render-fired (fired-tank s)
+                              (fired-ufo s)
+                              (fired-missile s))]))
 
 ; SIGS -> Image
 ; render the SIGS aim state
-(define (render-aim s)
+(define (render-aim tank ufo)
  (place-image
-  TANK (tank-loc (aim-tank s)) TPOS
+  TANK (tank-loc tank) TPOS
   (place-image
-   UFO (posn-x (aim-ufo s)) (posn-y (aim-ufo s))  ; #3
+   UFO (posn-x ufo) (posn-y ufo)  ; #3
    BACKGROUND)))
 
 ; SIGS -> Image
 ; render the SIGS fired state
-(define (render-fired s)
+(define (render-fired tank ufo missile)
  (place-image
-  TANK (tank-loc (fired-tank s)) TPOS
+  TANK (tank-loc tank) TPOS
   (place-image
-   MISSILE (posn-x (fired-missile s)) (posn-y (fired-missile s))
+   MISSILE (posn-x missile) (posn-y missile)
    (place-image
-    UFO (posn-x (fired-ufo s)) (posn-y (fired-ufo s))  ; #3
+    UFO (posn-x ufo) (posn-y ufo)  ; #3
     BACKGROUND))))
 
 
