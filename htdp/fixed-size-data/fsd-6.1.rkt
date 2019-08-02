@@ -123,7 +123,10 @@
 (define SCENE2 (make-fired (make-posn UPOS YMIDDLE)
                            (make-tank XMIDDLE TSPEED)
                            (make-posn XMIDDLE TPOS)))
-(define SCENE3 (make-fired (make-posn UPOS YBOTTOM)
+(define SCENE3 (make-fired (make-posn UPOS YMIDDLE)
+                           (make-tank XLEFT (* TSPEED -1))
+                           (make-posn XLEFT YMIDDLE)))
+(define SCENE4 (make-fired (make-posn UPOS YBOTTOM)
                            (make-tank XMIDDLE (* TSPEED -1))
                            (make-posn XMIDDLE YTOP)))
 
@@ -144,22 +147,22 @@
 ; SIGS -> Image
 ; render the SIGS aim state
 (define (render-aim s)
+ (place-image
+  TANK (tank-loc (aim-tank s)) TPOS
   (place-image
    UFO (posn-x (aim-ufo s)) (posn-y (aim-ufo s))  ; #2
-   (place-image
-    TANK (tank-loc (aim-tank s)) TPOS
-    BACKGROUND)))
+   BACKGROUND)))
 
 ; SIGS -> Image
 ; render the SIGS fired state
 (define (render-fired s)
+ (place-image
+  TANK (tank-loc (fired-tank s)) TPOS
   (place-image
-   UFO (posn-x (fired-ufo s)) (posn-y (fired-ufo s))  ; #2
+   MISSILE (posn-x (fired-missile s)) (posn-y (fired-missile s))
    (place-image
-    TANK (tank-loc (fired-tank s)) TPOS
-    (place-image
-     MISSILE (posn-x (fired-missile s)) (posn-y (fired-missile s))
-     BACKGROUND))))
+    UFO (posn-x (fired-ufo s)) (posn-y (fired-ufo s))  ; #2
+    BACKGROUND))))
 
 
 
