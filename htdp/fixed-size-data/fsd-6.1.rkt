@@ -24,8 +24,10 @@
 ;;     - As well as the structure (and it's Types)
 ;;
 ;; #2: Avoid nested functions more than one level deep!
-;;     Pass through the UFO, TANK, MISSILE to your auxiliary
-;;     functions ... makes life easier :)
+;;     Pass through the UFO, TANK, MISSILE .. read inside out:
+;;     - Generate a background with UFO and a BACKGROUND
+;;     - Pass this Image to the (tank-render ...) function
+;;     - Generate your final image
 ;;
 ;; #3: Try to avoid nested functions where possible (see #2)
 ;;     - rather than passing the whold SIGS struct to the render
@@ -147,11 +149,21 @@
 ; the BACKGROUND scene
 (define (render s)
   (cond
-    [(aim? s) (render-aim (aim-tank s) (aim-ufo s))]  ; #2
-    [(fired? s) (render-fired (fired-tank s)
-                              (fired-ufo s)
-                              (fired-missile s))]))
+    [(aim? s) ... (tank-render (aim-tank s)
+                               (ufo-render (aim-ufo s) BACKGROUND))]  ; #2
+    [(fired? s) ... (tank-render (fired-tank s)
+                                 (missile-render (fired-misile s))
+                                 (ufo-render (render-ufo s) BACKGROUND))]))
 
+
+; Tank Image -> Image
+; adds t to the given image im
+(define (tank-render t im) im)
+
+; UFO Image -> Image
+(define (ufo-render u im) im)
+
+; 
 ; SIGS -> Image
 ; render the SIGS aim state
 (define (render-aim tank ufo)
