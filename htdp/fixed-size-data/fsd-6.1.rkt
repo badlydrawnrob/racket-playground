@@ -234,6 +234,11 @@
           (hit? (fired-ufo s) (fired-missile s))) #true]
     [else #false])) 
 
+(check-expect (si-game-over? SCENE1) #false)
+(check-expect (si-game-over? SCENE2) #false)
+(check-expect (si-game-over? SCENE3) #true)
+(check-expect (si-game-over? SCENE4) #true)
+
 ; UFO MISSILE -> Boolean?
 ; Has the missile hit our target?
 (define (hit? ufo missile)
@@ -273,8 +278,25 @@
 (check-expect (distance-to-0 (make-posn 2 2)) 2)
 (check-expect (distance-to-0 (make-posn 5 7)) 8)
    
-; si-render-final
-; When the game is finished, render result
+; SIGS -> Image
+; Did they win or lose? Tell them when the game is finished.
+(define (si-render-final s)
+  (cond
+    [(landed? (fired-ufo s)) (win-lose "Loser :(")]
+    [(hit? (fired-ufo s) (fired-missile s)) (win-lose "Winner!")]))
+
+; Text -> Image
+(define (win-lose copy)
+  (place-image
+   (text copy 24 "olive")
+   XMIDDLE YMIDDLE
+   BACKGROUND))
+
+(si-render-final SCENE3)
+(si-render-final SCENE4)
+
+
+
 
 
 ;; Utility functions
