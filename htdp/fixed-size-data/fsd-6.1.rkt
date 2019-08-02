@@ -19,19 +19,24 @@
 ;;
 ;; != You have to adjust Posn depending on (image ...) size
 ;;
+;;
 ;; #1: An itemization can also be a structure!
 ;;     - Here, you're describing both the state of the game
 ;;     - As well as the structure (and it's Types)
 ;;
-;; #2: Avoid nested functions more than one level deep!
-;;     Pass through the UFO, TANK, MISSILE .. read inside out:
-;;     - Generate a background with UFO and a BACKGROUND
-;;     - Pass this Image to the (tank-render ...) function
-;;     - Generate your final image
+;; #2a: Avoid nested functions more than one level deep!
+;;      Pass through the UFO, TANK, MISSILE .. read inside out:
+;;      - Generate a background with UFO and a BACKGROUND
+;;      - Pass this Image to the (tank-render ...) function
+;;      - Generate your final image
 ;;
-;; #3: Try to avoid nested functions where possible (see #2)
+;;      != Chunking functions in this way allows reuse!
+;;
+;; #2b: Try to avoid nested functions where possible (see #2)
 ;;     - rather than passing the whold SIGS struct to the render
 ;;       functions, we only pass it's objects (UFO, TANK, MISSILE)
+;;
+;; #2c: Is there an easy way to do proper unit tests?
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -149,42 +154,38 @@
 ; the BACKGROUND scene
 (define (render s)
   (cond
-    [(aim? s) ... (tank-render (aim-tank s)
-                               (ufo-render (aim-ufo s) BACKGROUND))]  ; #2
-    [(fired? s) ... (tank-render (fired-tank s)
-                                 (missile-render (fired-misile s))
-                                 (ufo-render (render-ufo s) BACKGROUND))]))
+    [(aim? s) (tank-render (aim-tank s)
+                           (ufo-render (aim-ufo s) BACKGROUND))]  ; #2a
+    [(fired? s) (missile-render (fired-missile s)
+                                (tank-render (fired-tank s)
+                                             (ufo-render (fired-ufo s) BACKGROUND)))]))
 
 
 ; Tank Image -> Image
 ; adds t to the given image im
-(define (tank-render t im) im)
+(define (tank-render t im)
+  (place-image
+   TANK (tank-loc t) TPOS         ; #2b
+   im))
 
 ; UFO Image -> Image
-(define (ufo-render u im) im)
-
-; 
-; SIGS -> Image
-; render the SIGS aim state
-(define (render-aim tank ufo)
- (place-image
-  TANK (tank-loc tank) TPOS
+(define (ufo-render u im)
   (place-image
-   UFO (posn-x ufo) (posn-y ufo)  ; #3
-   BACKGROUND)))
+   UFO (posn-x u) (posn-y u)      ; #2b
+   im))
 
-; SIGS -> Image
-; render the SIGS fired state
-(define (render-fired tank ufo missile)
- (place-image
-  TANK (tank-loc tank) TPOS
+; Missile Image -> Image
+(define (missile-render m im)
   (place-image
-   MISSILE (posn-x missile) (posn-y missile)
-   (place-image
-    UFO (posn-x ufo) (posn-y ufo)  ; #3
-    BACKGROUND))))
+   MISSILE (posn-x m) (posn-y m)  ; #2b
+   im))
 
 
+; Hacky test it works:
+(render SCENE1)  ; #2c
+(render SCENE2)  ; #2c
+(render SCENE3)  ; #2c
+(render SCENE4)  ; #2c
 
 
 ;; Utility functions
