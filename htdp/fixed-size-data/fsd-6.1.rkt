@@ -37,6 +37,18 @@
 ;;       functions, we only pass it's objects (UFO, TANK, MISSILE)
 ;;
 ;; #2c: Is there an easy way to do proper unit tests?
+;;
+;; #3a: A predicate that returns #true or #false
+;;      - I wonder if you could reuse the render functions here?
+;;        + if it looks like x or y image
+;;
+;; #3b: The number could be negative (if not close) so
+;;      use (abs ...)
+;;
+;; #3c: Distance to zero (from origin)
+;;      - See `fsd-5.3.rkt` for original task
+;;
+;;      != Our origin is TOP-LEFT
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -56,8 +68,11 @@
 (define SPEED 3)
 
 (define UPOS 10)
+(define ULAND 90)
 (define TPOS (- HEIGHT 10))
 (define TSPEED 3)
+
+(define SENSITIVITY 3)
 
 
 ; Graphical constants
@@ -131,17 +146,24 @@
 ;   (make-game YPOS XPOS Posn)
 ; See Types above
 
-(define SCENE1 (make-aim (make-posn UPOS YTOP)
-                         (make-tank XLEFT TSPEED)))
-(define SCENE2 (make-fired (make-posn UPOS YMIDDLE)
-                           (make-tank XMIDDLE TSPEED)
-                           (make-posn XMIDDLE TPOS)))
-(define SCENE3 (make-fired (make-posn UPOS YMIDDLE)
-                           (make-tank XLEFT (* TSPEED -1))
-                           (make-posn XLEFT YMIDDLE)))
-(define SCENE4 (make-fired (make-posn UPOS YBOTTOM)
-                           (make-tank XMIDDLE (* TSPEED -1))
-                           (make-posn XMIDDLE YTOP)))
+(define TANK1 (make-tank XLEFT TSPEED))
+(define TANK2 (make-tank XMIDDLE TSPEED))
+(define TANK3 (make-tank XLEFT (* TSPEED -1)))
+(define TANK4 (make-tank XMIDDLE (* TSPEED -1)))
+
+(define UFO1 (make-posn UPOS YTOP))
+(define UFO2 (make-posn UPOS YMIDDLE))
+(define UFO3 (make-posn UPOS YMIDDLE))
+(define UFO4 (make-posn UPOS YBOTTOM))
+
+(define MISSILE1 (make-posn XMIDDLE TPOS))
+(define MISSILE2 (make-posn XLEFT YMIDDLE))
+(define MISSILE3 (make-posn XMIDDLE YTOP))
+
+(define SCENE1 (make-aim UFO1 TANK1))
+(define SCENE2 (make-fired UFO2 TANK2 MISSILE1))
+(define SCENE3 (make-fired UFO3 TANK3 MISSILE2))
+(define SCENE4 (make-fired UFO4 TANK4 MISSILE3))
 
 
 
@@ -150,8 +172,9 @@
 ;; =============
 
 ; SIGS -> Image
-; adds TANK, UFO, and possibly MISSILE to
-; the BACKGROUND scene
+; Renders the given game state on top of BACKGROUND
+; generates TANK, UFO, and possibly MISSILE
+; - See examples #2c
 (define (render s)
   (cond
     [(aim? s)
@@ -191,6 +214,69 @@
 (render SCENE4)  ; #2c
 
 
+
+
+;; Game over?
+;; ----------
+;; If missile hits ufo player wins
+;; - if ref points are "close enough"
+;;   otherwise ufo lands and player loses
+
+; SIGS -> Boolean?
+; Determines if the UFO has been hit
+; - UFO landed
+; - UFO hit
+(define (si-game-over? s)
+  (cond
+    [(and (fired? s)
+          (landed? (fired-ufo s))) #true]  ; #3a
+    [(and (fired? s)
+          (hit? (fired-ufo s) (fired-missile s))) #true]
+    [else #false])) 
+
+; UFO MISSILE -> Boolean?
+; Has the missile hit our target?
+(define (hit? ufo missile)
+  (<= (how-close ufo missile) SENSITIVITY))
+
+(check-expect (hit? UFO1 MISSILE1) #false)
+(check-expect (hit? UFO2 MISSILE2) #true)
+(check-expect (hit? UFO3 MISSILE3) #false)
+
+; UFO LANDED -> Boolean?
+(define (landed? ufo)
+  (= (distance-to-0 ufo) ULAND))
+
+(check-expect (landed? UFO1) #false)
+(check-expect (landed? UFO2) #false)
+(check-expect (landed? UFO3) #false)
+(check-expect (landed? UFO4) #true)
+
+; UFO MISSILE -> Number
+; Calculate how close they are
+(define (how-close ufo missile)
+  (abs (- (distance-to-0 ufo)
+          (distance-to-0 missile))))     ; #3b
+
+(check-expect (how-close UFO1 MISSILE1) 164)
+(check-expect (how-close UFO2 MISSILE2) 2)
+(check-expect (how-close UFO3 MISSILE3) 100)
+
+; Posn -> Number
+; Find the distance to origin
+(define (distance-to-0 p)
+  (inexact->exact
+   (floor (sqrt (+ (sqr (posn-x p))
+                   (sqr (posn-y p)))))))  ; #3c
+
+(check-expect (distance-to-0 (make-posn 0 0)) 0)
+(check-expect (distance-to-0 (make-posn 2 2)) 2)
+(check-expect (distance-to-0 (make-posn 5 7)) 8)
+   
+; si-render-final
+; When the game is finished, render result
+
+
 ;; Utility functions
 ;; -----------------
 
@@ -205,7 +291,8 @@
 ;  (big-bang ...
 ;    [on-tick tock]
 ;    [to-draw render]
-;    [on-key commands]))
+;    [on-key commands]
+;    [stop-when si-game-over?]))
 
 
 
@@ -232,7 +319,5 @@
 ; MISSILE APPEARS from tank (plot position)
 ; - straight verticle line
 
-; If missile hits ufo player wins
-; - if ref points are "close enough"
-; otherwise ufo lands and player loses
+
 
