@@ -14,6 +14,7 @@
 ;;
 ;;
 ;; != Too many constants might make things more confusing
+;;    might be better to just use individual entries on (make-tank ...) etc?
 ;;
 ;; != See active vs passive voice: https://bit.ly/2Gx2HoQ
 ;;
@@ -49,6 +50,13 @@
 ;;      - See `fsd-5.3.rkt` for original task
 ;;
 ;;      != Our origin is TOP-LEFT
+;;
+;; #4: Random numbers are hard to test, so we split out
+;;     our function into:
+;;     - easy to test (main body)
+;;     - don't bother to test (pass the random function to main)
+;;
+;;     != you could use (check-random ...) instead
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -58,6 +66,27 @@
 ;; Sample problem
 ;; ==============
 ;; Design a space invader game
+
+;; Original wish list
+;; ------------------
+
+;; Player controls the tank
+;; - moves at constant SPEED
+;; - can change direction on "left" or "right"
+
+;; Player defends our planet
+;; planet is bottom of canvas
+
+;; UFO is attacking
+;; - see intervals (number line)
+;; - descends from top of canvas to bottom
+
+;; Player has to fire a single missile (a triangle)
+;; - triggered by space bar
+;; - missile appears from tank (plot position)
+;; - straight verticle line
+
+
 
 
 ; Physical constants
@@ -71,6 +100,7 @@
 (define ULAND 90)
 (define TPOS (- HEIGHT 10))
 (define TSPEED 3)
+(define MSPEED 3)
 
 (define SENSITIVITY 3)
 
@@ -138,12 +168,12 @@
 
 (define-struct aim [ufo tank])            ; #1
 ; A game is a structure
-;   (make-game YPOS XPOS Posn)
+;   (make-aim UFO Tank)
 ; See Types above
 
 (define-struct fired [ufo tank missile])  ; #1
 ; A game is a structure
-;   (make-game YPOS XPOS Posn)
+;   (make-fired UFO Tank Missile)
 ; See Types above
 
 (define TANK1 (make-tank XLEFT TSPEED))
@@ -298,9 +328,68 @@
 
 
 
+;; Move our objects
+;; ================
+;; for every clock tick
+;;
+;; 1. Tank moves left->right
+;; 2. Missile moves up
+;; 3. UFO jumps randomly left->right
 
-;; Utility functions
-;; -----------------
+; SIGS -> SIGS
+; Moves our TANK, UFO, maybe MISSILE
+(define (si-move s)
+  (cond
+    [(aim? s) (move-aim (aim-ufo s) (aim-tank s))]
+    [(fired? s) (move-fired (fired-ufo s) (fired-tank s) (fired-missile s))]))
+
+; UFO Tank -> SIGS
+; Create a new SIGS with movement
+(define (move-aim ufo tank)
+  (make-aim (move-ufo ufo) (move-tank tank)))
+
+; UFO Tank Missile -> SIGS
+(define (move-fired ufo tank missile)
+  (make-fired (move-ufo ufo) (move-tank tank) (move-missile missile)))
+
+; UFO -> UFO
+; move UFO randomly
+(define (move-ufo u)
+  (random-ufo u WIDTH))
+
+; UFO Number -> UFO
+(define (random-ufo x u)
+  (make-posn (random x) (posn-y u)))
+
+(check-expect (move-ufo UFO1) UFO1)
+
+; Number -> Number
+; Random number between [0, x)
+;(define (si-move w)
+;  (si-move-proper w (random 3)))
+
+; SIGS Number -> SIGS
+; (define (si-move-proper w delta)
+;  w)
+
+; Tank -> Tank
+; move tank
+; - right (3)
+; - left (-3)
+(define (move-tank t)
+  (make-tank (+ (tank-loc t) (tank-vel t))
+             (tank-vel t)))
+
+(check-expect (move-tank TANK1) (make-tank 18 3))
+(check-expect (move-tank TANK3) (make-tank 12 -3))
+
+; Missile -> Missile
+(define (move-missile m)
+  (make-posn (posn-x m)
+             (+ (posn-y m) MSPEED)))
+
+(check-expect (move-missile MISSILE1) (make-posn 150 (+ 90 MSPEED)))
+(check-expect (move-missile MISSILE2) (make-posn 15 (+ 50 MSPEED)))
 
 
 
@@ -321,25 +410,7 @@
 
 
 
-; Wish list
-; ---------
 
-; Player controls the tank
-
-; moves at constant SPEED
-; can change direction on "left" or "right"
-
-; Player defends our planet
-; planet is bottom of canvas
-
-; UFO is attacking
-; see intervals (number line)
-; descends from top of canvas to bottom
-
-; Player has to fire a single missile (a triangle)
-; by hitting space bar
-; MISSILE APPEARS from tank (plot position)
-; - straight verticle line
 
 
 
