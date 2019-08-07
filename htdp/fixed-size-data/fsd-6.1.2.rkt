@@ -29,6 +29,8 @@
 ;; #5: Split out the tests
 ;;     - Using constants is a ballache; reduce, or use better ones:
 ;;       + TLEFT, TRIGHT
+;;
+;; #6: A lot of repetition creating instances (make-ufo ...) etc
 
 
 (require 2htdp/image)
@@ -312,16 +314,22 @@
 ; UFO Tank -> SIGS
 ; Create a new SIGS with movement
 (define (move-aim ufo tank)
-  (make-aim (move-ufo ufo) (move-tank tank)))
+  (make-aim (random-ufo-main ufo 3) (move-tank tank)))
 
 ; UFO Tank Missile -> SIGS
 (define (move-fired ufo tank missile)
-  (make-fired (move-ufo ufo) (move-tank tank) (move-missile missile)))
+  (make-fired (random-ufo-main ufo 3) (move-tank tank) (move-missile missile)))
 
 
-;; ...
-(define (move-ufo u)
-  u)
+; UFO Number -> UFO
+(define (random-ufo-main u rand)  
+  (random-ufo u (random rand)))               ;; #4
+
+; UFO Number -> UFO
+(define (random-ufo u num)       
+  (make-posn (+ (posn-x u) num) (posn-y u)))  ;; #4
+
+(check-expect (random-ufo UFO1 3) (make-posn 13 0))
 
 
 
@@ -367,16 +375,47 @@
 
 
 
+;; Our Player KeyEvents
+;; ====================
+
+; KeyEvent SIGS -> SIGS
+; - sigs-aim
+; - sigs-fired ("spacebar")
+; - move-tank-left ("left")
+; - move-tank-right ("right")
+(define (commands ke s)
+  (cond
+    [(key=? "spacebar") (fire! (aim-ufo s) (aim-tank s) (tank-vel (aim-tank s)))]
+    [(key=? "left") (flip-tank  s (* TSPEED -1))]
+    [(key=? "right") (flip-tank s TSPEED)]
+    [else s]))
+
+(define (fire! ufo tank vel)
+  (make-fired (make-posn (posn-x ufo) (posn-y ufo))
+              (make-tank (tank-loc tank) vel)
+              (make-posn (tank-loc tank) MSPEED)))
+
+(define (flip-tank s vel)
+  (cond
+    [(aim? s) (flip-tank-aim (aim-ufo s) (aim-tank s) vel)]
+    [(fired? s) (fire! (fired-ufo s) (fired-ufo s) vel)]))
+
+(define (flip-tank-aim ufo tank vel)
+  (make-aim (make-posn (posn-x ufo) (posn-y ufo))
+            (make-tank (tank-loc tank) vel)))
+
+
+
 
 ;; Our world
 ;; =========
 
-;(define (main ...)
-;  (big-bang ...
-;    [on-tick tock]
-;    [to-draw render]
-;    [on-key commands]
-;    [stop-when si-game-over? si-render-final]))
+(define (main sigs)
+  (big-bang sigs
+    [on-tick si-move]
+    [to-draw render]
+    [on-key commands]
+    [stop-when si-game-over? si-render-final]))
 
 
 
