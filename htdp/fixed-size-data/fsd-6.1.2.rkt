@@ -16,7 +16,9 @@
 ;;     c. An easier way to do unit tests?
 ;;
 ;; #3: A predicate explained in Python: https://youtu.be/wo36QTibfiE
-;;     a. ...
+;;     a. You're actually using predicates AS the condition
+;;        + SIGS game states
+;;        + (hit? ...) or (landed? ...)
 ;;     b. Number maybe negative (if not close)
 ;;     c. Distance to zero (top-left origin): `fsd-5.3.rkt`
 ;;
@@ -214,11 +216,11 @@
 ; - UFO hit
 (define (si-game-over? s)
   (cond
-    [(and (fired? s)
-          (landed? (fired-ufo s))) #true]  ; #3a
-    [(and (fired? s)
-          (hit? (fired-ufo s) (fired-missile s))) #true]
-    [else #false])) 
+    [(aim? s)
+     (landed? (aim-ufo s))]
+    [(fired? s)
+     (or (landed? (fired-ufo s))
+         (hit? (fired-ufo s) (fired-missile s)))]))  ; #3a
 
 (check-expect (si-game-over? SCENE1) #false)
 (check-expect (si-game-over? SCENE2) #false)
