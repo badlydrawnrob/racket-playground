@@ -5,6 +5,9 @@
 ;; ==============================
 ;; See 6.1.1.rkt for full notes (`...` removed for ease-of-scanning)
 ;;
+;; #!: This is wrong and will return #true on horizontal axis
+;;     which isn't what we want. See: https://www.mathopenref.com/coordpointdistvh.html
+;;
 ;; != Be careful of too many constants
 ;;
 ;; #1: An itemization can also be a structure!
@@ -247,7 +250,7 @@
 (check-expect (landed? UFO1) #false)
 (check-expect (landed? UFO2) #false)
 (check-expect (landed? UFO3) #false)
-(check-expect (landed? UFO4) #true)
+(check-expect (landed? UFO4) #true)     ; #!
 
 
 ; UFO MISSILE -> Number
@@ -367,10 +370,10 @@
 ; Missile -> Missile
 (define (move-missile m)
   (make-posn (posn-x m)
-             (+ (posn-y m) MSPEED)))
+             (- (posn-y m) MSPEED)))
 
-(check-expect (move-missile MISSILE1) (make-posn 150 (+ 90 MSPEED)))
-(check-expect (move-missile MISSILE2) (make-posn 15 (+ 50 MSPEED)))
+(check-expect (move-missile MISSILE1) (make-posn 150 (- 90 MSPEED)))
+(check-expect (move-missile MISSILE2) (make-posn 15 (- 50 MSPEED)))
 
 
 
@@ -383,17 +386,17 @@
 ; - sigs-fired ("spacebar")
 ; - move-tank-left ("left")
 ; - move-tank-right ("right")
-(define (commands ke s)
+(define (commands s ke)
   (cond
-    [(key=? "spacebar") (fire! (aim-ufo s) (aim-tank s) (tank-vel (aim-tank s)))]
-    [(key=? "left") (flip-tank  s (* TSPEED -1))]
-    [(key=? "right") (flip-tank s TSPEED)]
+    [(key=? ke " ") (fire! (aim-ufo s) (aim-tank s) (tank-vel (aim-tank s)))]
+    [(key=? ke "left") (flip-tank  s (* TSPEED -1))]
+    [(key=? ke "right") (flip-tank s TSPEED)]
     [else s]))
 
 (define (fire! ufo tank vel)
   (make-fired (make-posn (posn-x ufo) (posn-y ufo))
               (make-tank (tank-loc tank) vel)
-              (make-posn (tank-loc tank) MSPEED)))
+              (make-posn (tank-loc tank) YBOTTOM)))
 
 (define (flip-tank s vel)
   (cond
