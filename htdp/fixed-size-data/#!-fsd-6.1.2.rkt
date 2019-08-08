@@ -69,12 +69,13 @@
 
 (define UPOS 10)
 (define ULAND 90)
+(define USPEED 1)
 (define UBOUNDING (- ULAND 1))
 (define TPOS (- HEIGHT 10))
 (define TSPEED 3)
 (define MSPEED 3)
 
-(define SENSITIVITY 3)
+(define SENSITIVITY 2)
 (define RANDOM 3)
 
 
@@ -343,9 +344,9 @@
 
 ; UFO Number -> UFO
 (define (random-ufo u num)       
-  (make-posn (+ (posn-x u) num) (+ (posn-y u) TSPEED)))  ;; #4
+  (make-posn (+ (posn-x u) num) (+ (posn-y u) USPEED)))  ;; #4
 
-(check-expect (random-ufo UFO1 3) (make-posn 13 3))
+(check-expect (random-ufo UFO1 RANDOM) (make-posn 13 1))
 
 ;(define (random-ufo u num)       
 ;  (cond
