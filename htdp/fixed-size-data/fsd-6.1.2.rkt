@@ -7,8 +7,9 @@
 ;;
 ;; #!: This is wrong and will return #true on horizontal axis
 ;;     which isn't what we want. See: https://www.mathopenref.com/coordpointdistvh.html
+;;     YOU NEED THIS FOR THE (landed? ...) function to work!!!
 ;;
-;; != Be careful of too many constants
+;; #!: Be careful of too many constants
 ;;
 ;; #1: An itemization can also be a structure!
 ;;     ...
@@ -25,9 +26,18 @@
 ;;     b. Number maybe negative (if not close)
 ;;     c. Distance to zero (top-left origin): `fsd-5.3.rkt`
 ;;
+;;        #! HERE BE BUGS. It's right in theory but not in practice,
+;;           you just need the vertical access and #4 screws this up
+;;           for now, set a bounding box for UFO and keep as-is.
+;;
 ;; #4: Random numbers are hard to test!
 ;;     - Use a child function
 ;;     - Or one function, see docs for (check-random ...) testing
+;;
+;;        #! IDEALLY, I was trying to set up a bounding box,
+;;           then "flip" the RANDOM number to a negative
+;;           + left->right until XBOUNDING
+;;           + then right->left until XLEFT (repeat)
 ;;
 ;; #5: Split out the tests
 ;;     - Using constants is a ballache; reduce, or use better ones:
@@ -59,11 +69,13 @@
 
 (define UPOS 10)
 (define ULAND 90)
+(define UBOUNDING (- ULAND 1))
 (define TPOS (- HEIGHT 10))
 (define TSPEED 3)
 (define MSPEED 3)
 
 (define SENSITIVITY 3)
+(define RANDOM 3)
 
 
 ; Graphical constants
@@ -95,6 +107,7 @@
 ; A XPOS is a range (from left to right)
 ; - range[0, WIDTH]
 (define XLEFT (+ 0 (/ (image-width TANK) 2)))
+(define XBOUNDING UBOUNDING) ; #!
 (define XMIDDLE (/ WIDTH 2))
 (define XRIGHT (+ WIDTH (/ (image-width TANK) 2)))
 
@@ -317,11 +330,11 @@
 ; UFO Tank -> SIGS
 ; Create a new SIGS with movement
 (define (move-aim ufo tank)
-  (make-aim (random-ufo-main ufo 3) (move-tank tank)))
+  (make-aim (random-ufo-main ufo RANDOM) (move-tank tank)))
 
 ; UFO Tank Missile -> SIGS
 (define (move-fired ufo tank missile)
-  (make-fired (random-ufo-main ufo 3) (move-tank tank) (move-missile missile)))
+  (make-fired (random-ufo-main ufo RANDOM) (move-tank tank) (move-missile missile)))
 
 
 ; UFO Number -> UFO
@@ -330,9 +343,16 @@
 
 ; UFO Number -> UFO
 (define (random-ufo u num)       
-  (make-posn (+ (posn-x u) num) (posn-y u)))  ;; #4
+  (make-posn (+ (posn-x u) num) (+ (posn-y u) TSPEED)))  ;; #4
 
-(check-expect (random-ufo UFO1 3) (make-posn 13 0))
+(check-expect (random-ufo UFO1 3) (make-posn 13 3))
+
+;(define (random-ufo u num)       
+;  (cond
+;    [(left? u) (make-posn (+ (posn-x u) num) (posn-y u))]
+;    [(right? u) (make-posn (- (posn-x u) num) (posn-y u))]))  ;; #4
+
+
 
 
 
@@ -350,19 +370,40 @@
 (check-expect (move-tank TANK1) (make-tank 18 3))
 (check-expect (move-tank TANK3) (make-tank XLEFT -3))
 
-(define (left? t)
-  (and (= (tank-loc t) XLEFT)
-       (= (tank-vel t) -3)))
+
+
+
+;; Add a bounding box
+;; ------------------
+;; We can only go so far left->right with our
+;; UFO and TANK. Set up itemization for this:
+
+(define (left? obj)
+  [cond
+    [(tank? obj)
+     (and (= (tank-loc obj) XLEFT)
+          (= (tank-vel obj) -3))]
+    [(posn? obj)
+     (= (posn-x obj) XLEFT)]])
 
 (check-expect (left? (make-tank XLEFT -3)) #true)
 (check-expect (left? (make-tank XLEFT 3)) #false)
+(check-expect (left? (make-posn XLEFT YTOP)) #true)
+(check-expect (left? (make-posn XBOUNDING YTOP)) #false)
 
-(define (right? t)
-  (and (= (tank-loc t) XRIGHT)
-       (= (tank-vel t) 3)))
+(define (right? obj)
+  (cond
+    [(tank? obj)
+     (and (= (tank-loc obj) XRIGHT)
+       (= (tank-vel obj) 3))]
+    [(posn? obj)
+     (= (posn-x obj) XBOUNDING)]))
+  
 
 (check-expect (right? (make-tank XRIGHT -3)) #false)
 (check-expect (right? (make-tank XRIGHT 3)) #true)
+(check-expect (right? (make-posn XLEFT YTOP)) #false)
+(check-expect (right? (make-posn XBOUNDING YTOP)) #true)
 
 
 
