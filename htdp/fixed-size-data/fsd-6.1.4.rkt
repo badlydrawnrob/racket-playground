@@ -307,13 +307,10 @@
 ;(define (si-game=over? s) #false) ;stub
 
 (define (si-game-over? s)
-  (cond [(boolean? (sigs-missile s))
-         (ufo-landed? (sigs-ufo s))]
-        [(posn? (sigs-missile s))
-         (or
-          (ufo-landed? (sigs-ufo s))
-          (ufo-hit? (sigs-ufo s)
-                    (sigs-missile s)))]))
+  (or
+   (ufo-landed? (sigs-ufo s))
+   (ufo-hit? (sigs-ufo s)
+             (sigs-missile s))))
 
 ; UFO -> Boolean
 ; #true if the UFO has landed -- you loose
@@ -417,14 +414,9 @@
 ;  w)
 
 (define (si-move-proper s r)
-  (cond [(boolean? (sigs-missile s))
-         (make-sigs (update-ufo (sigs-ufo s) r)
-                    (update-tank (sigs-tank s))
-                    #false)]
-        [(posn? (sigs-missile s))
-         (make-sigs (update-ufo (sigs-ufo s) r)
-                    (update-tank (sigs-tank s))
-                    (update-missile (sigs-missile s)))]))
+  (make-sigs (update-ufo (sigs-ufo s) r)
+             (update-tank (sigs-tank s))
+             (update-missile (sigs-missile s))))
 
 ; Ufo Number -> Ufo
 ; update a UFO with a random adustment on tock
@@ -515,14 +507,9 @@
 ;(define (tank-left s) s)  ;stub
 
 (define (tank-left s)
-  (cond [(boolean? (sigs-missile s))
-         (make-sigs (sigs-ufo s)
-                    (tank-turn-left (sigs-tank s))
-                    #false)]
-        [(posn? (sigs-missile s))
-         (make-sigs (sigs-ufo s)
-                     (tank-turn-left (sigs-tank s))
-                     (sigs-missile s))]))
+  (make-sigs (sigs-ufo s)
+             (tank-turn-left (sigs-tank s))
+             (sigs-missile s)))
 
 ; Tank -> Tank
 ; turn Tank right (+)
