@@ -346,10 +346,13 @@
 ;(define (ufo-hit? u m) #false) ;stub
 
 (define (ufo-hit? u m)
-  (and (<= (abs (- (posn-x u) (posn-x m)))
-           (+ H-UFO-WIDTH H-MISSILE-WIDTH))
-       (<= (abs (- (posn-y u) (posn-y m)))
-           (+ H-UFO-HEIGHT H-MISSILE-HEIGHT))))
+  (cond
+    [(boolean? m) #false]
+    [(posn? m)
+     (and (<= (abs (- (posn-x u) (posn-x m)))
+              (+ H-UFO-WIDTH H-MISSILE-WIDTH))
+          (<= (abs (- (posn-y u) (posn-y m)))
+              (+ H-UFO-HEIGHT H-MISSILE-HEIGHT)))]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -451,7 +454,9 @@
               (make-posn 20 (- 30 MISSILE-SPEED)))
 
 (define (update-missile m)
-  (make-posn (posn-x m) (- (posn-y m) MISSILE-SPEED)))
+  (cond [(boolean? m) #false]
+        [(posn? m)
+         (make-posn (posn-x m) (- (posn-y m) MISSILE-SPEED))]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
