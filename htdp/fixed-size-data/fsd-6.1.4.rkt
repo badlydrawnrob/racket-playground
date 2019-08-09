@@ -10,6 +10,9 @@
 ;; See `fsd-6.1.1` and `fsd-6.1.2` for my
 ;; almost working, but not quite versions
 ;;
+;; != Pick the low-hanging fruit first (this main
+;;    MissileOrNot condition)
+;;
 ;; #1: There are many ways to represent data and states
 ;;     - this version does not have a before and after state
 ;;     - it uses a Boolean? predicate instead
@@ -21,6 +24,12 @@
 ;;
 ;;       != We could now use the simpler "designing with structures"
 ;;          recipe: /part_one.html#%28part._sec~3adesignstructs%29
+;;
+;; #2: You're now only needing to check a state in the missile
+;;     function, which should reduce repetition
+;;
+;;     != Should always expect a #false, but if a #true is
+;;        given ... still returns #false
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -148,40 +157,37 @@
 
 
 ;;;;;;; #! ===================================================
-; A SIGS is one of:
-; – (make-aim UFO Tank)
-; – (make-fired UFO Tank Missile)
+; SIGS.v2 is now one main state:
+; – (make-sigs UFO Tank MissileOrNot)
 ; interpretation represents the complete state of a
 ; space invader game
 
 ; an instance that describes the tank maneuvering into position to fire:
 ; the missile:
 (define AIM1
-  (make-aim (make-posn 20 10)
-            (make-tank 28 -3)))
+  (make-sigs (make-posn 20 10)
+             (make-tank 28 -3)
+             #false))
 
 ; just like the previous one but the missile has been fired:
 (define FIRE1
-  (make-fired (make-posn 20 10)
-              (make-tank 28 -3)
-              (make-posn 28 (- HEIGHT TANK-HEIGHT))))
+  (make-sigs (make-posn 20 10)
+             (make-tank 28 -3)
+             (make-posn 28 (- HEIGHT TANK-HEIGHT))))
 
 ; one where the missile is about to collide with the UFO:
 (define FIRE2
-  (make-fired (make-posn 20 100)
-              (make-tank 100 3)
-              (make-posn 22 103)))
+  (make-sigs (make-posn 20 100)
+             (make-tank 100 3)
+             (make-posn 22 103)))
 
 ; SIGS -> ???
 #; ;template for SIGS
 (define (fn-for-sigs s)
-  (cond [(aim? s)
-         (... (fn-for-ufo (aim-ufo s))
-              (fn-for-tank (aim-tank s)))]
-        [(fired? s)
-         (... (fn-for-ufo (fired-ufo s))
-              (fn-for-tank (fired-tank s))
-              (fn-for-missile (fired-missile s)))]))
+  (... (fn-for-ufo (aim-ufo s))
+       (fn-for-tank (aim-tank s)
+       (fn-for-missile (fired-missile s)))))
+
 
 ;;;;;; #! ==========================================
 
@@ -195,17 +201,10 @@
 ; the BACKGROUND scene
 
 (define (si-render s)
-  (cond [(aim? s)
-         (tank-render (aim-tank s)
-              (ufo-render (aim-ufo s)
-                          BACKGROUND))]
-        [(fired? s)
-         (tank-render (fired-tank s)
-                      (ufo-render (fired-ufo s)
-                                  (missile-render (fired-missile s)
-                                                 BACKGROUND)))]))
-
-
+  (tank-render (sigs-tank s)
+               (ufo-render (sigs-ufo s)
+                           (missile-render.v2 (sigs-missile s)
+                                              BACKGROUND))))
 
 ; Tank Image -> Image
 ; adds t to the given image im
@@ -237,17 +236,18 @@
 ; - #false
 ; - Posn
 (check-expect (missile-render.v2 #false BACKGROUND) #false)
-(check-expect (missile-render.v2 (make-posn 32 (- HEIGHT
-                                                  TANK-HEIGHT
-                                                  10) BACKGROUND)))
-              (place-image MISSILE 32 (- HEIGHT
-                                         TANK-HEIGHT
-                                         10) BACKGROUND)
+(check-expect (missile-render.v2 (make-posn 32 (- HEIGHT TANK-HEIGHT 10))
+                                 BACKGROUND)
+              (place-image MISSILE 32 (- HEIGHT TANK-HEIGHT 10)
+                           BACKGROUND))
 
 ; (define (missile-render.v2 m im)
 
-;(define (missile-render m im)
-;  (place-image MISSILE (posn-x m) (posn-y m) im))
+(define (missile-render.v2 m s)
+  (cond
+    [(boolean? m) #false]  ; #2
+    [(posn? m)
+     (place-image MISSILE (posn-x m) (posn-y m) s)]))
 
 
 
@@ -302,13 +302,13 @@
 ;(define (si-game=over? s) #false) ;stub
 
 (define (si-game-over? s)
-  (cond [(aim? s)
-         (ufo-landed? (aim-ufo s))]
-        [(fired? s)
+  (cond [(boolean? (sigs-missile s))
+         (ufo-landed? (sigs-ufo s))]
+        [(posn? (sigs-missile s))
          (or
-          (ufo-landed? (fired-ufo s))
-          (ufo-hit? (fired-ufo s)
-                    (fired-missile s)))]))
+          (ufo-landed? (sigs-ufo s))
+          (ufo-hit? (sigs-ufo s)
+                    (sigs-missile s)))]))
 
 ; UFO -> Boolean
 ; #true if the UFO has landed -- you loose
@@ -377,42 +377,49 @@
 ; 1 - move -1 in x direction
 ; 2 - move 1 in x direction
 
-(check-expect (si-move-proper (make-aim (make-posn 10 20)
-                                        (make-tank 50 0))
+(check-expect (si-move-proper (make-sigs (make-posn 10 20)
+                                         (make-tank 50 0)
+                                         #false)
                               0)
-              (make-aim (make-posn 10 (+ 20 (- UFO-SPEED JUMP)))
-                        (make-tank 50 0)))
+              (make-sigs (make-posn 10 (+ 20 (- UFO-SPEED JUMP)))
+                         (make-tank 50 0)
+                         #false))
 
-(check-expect (si-move-proper (make-aim (make-posn 10 20)
-                                        (make-tank 50 3))
+(check-expect (si-move-proper (make-sigs (make-posn 10 20)
+                                         (make-tank 50 3)
+                                         #false)
                               1)
-              (make-aim (make-posn (- 10 JUMP) (+ 20 UFO-SPEED))
-                        (make-tank 53 3)))
-(check-expect (si-move-proper (make-aim (make-posn 10 20)
-                                        (make-tank 50 3))
+              (make-sigs (make-posn (- 10 JUMP) (+ 20 UFO-SPEED))
+                         (make-tank 53 3)
+                         #false))
+(check-expect (si-move-proper (make-sigs (make-posn 10 20)
+                                         (make-tank 50 3)
+                                         #false)
                               2)
-              (make-aim (make-posn (+ 10 JUMP) (+ 20 UFO-SPEED))
-                        (make-tank 53 3)))
+              (make-sigs (make-posn (+ 10 JUMP) (+ 20 UFO-SPEED))
+                         (make-tank 53 3)
+                         #false))
 
-(check-expect (si-move-proper (make-fired (make-posn 10 20)
-                                          (make-tank 50 3)
-                                          (make-posn 20 30))
+(check-expect (si-move-proper (make-sigs (make-posn 10 20)
+                                         (make-tank 50 3)
+                                         (make-posn 20 30))
                               0)
-              (make-fired (make-posn 10 (+ 20 (- UFO-SPEED JUMP)))
-                          (make-tank 53 3)
-                          (make-posn 20 (- 30 MISSILE-SPEED))))
+              (make-sigs (make-posn 10 (+ 20 (- UFO-SPEED JUMP)))
+                         (make-tank 53 3)
+                         (make-posn 20 (- 30 MISSILE-SPEED))))
 
 ;(define (si-move-proper w r)
 ;  w)
 
 (define (si-move-proper s r)
-  (cond [(aim? s)
-         (make-aim (update-ufo (aim-ufo s) r)
-                   (update-tank (aim-tank s)))]
-        [(fired? s)
-         (make-fired (update-ufo (fired-ufo s) r)
-                     (update-tank (fired-tank s))
-                     (update-missile (fired-missile s)))]))
+  (cond [(boolean? (sigs-missile s))
+         (make-sigs (update-ufo (sigs-ufo s) r)
+                    (update-tank (sigs-tank s))
+                    #false)]
+        [(posn? (sigs-missile s))
+         (make-sigs (update-ufo (sigs-ufo s) r)
+                    (update-tank (sigs-tank s))
+                    (update-missile (sigs-missile s)))]))
 
 ; Ufo Number -> Ufo
 ; update a UFO with a random adustment on tock
@@ -474,34 +481,43 @@
 
 ; SIGS -> SIGS
 ; turn tank right (set velocity -)
-(check-expect (tank-left (make-aim (make-posn 10 50) (make-tank 30 3)))
-              (make-aim (make-posn 10 50) (make-tank 30 -3)))
-(check-expect (tank-left (make-aim (make-posn 10 50) (make-tank 30 -3)))
-              (make-aim (make-posn 10 50) (make-tank 30 -3)))
+(check-expect (tank-left (make-sigs (make-posn 10 50)
+                                    (make-tank 30 3)
+                                    #false))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 -3)
+                         #false))
+(check-expect (tank-left (make-sigs (make-posn 10 50)
+                                    (make-tank 30 -3)
+                                    #false))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 -3)
+                         #false))
 
-(check-expect (tank-left (make-fired (make-posn 10 50)
-                                     (make-tank 30 3)
-                                     (make-posn 30 30)))
-              (make-fired (make-posn 10 50)
-                          (make-tank 30 -3)
-                          (make-posn 30 30)))
-(check-expect (tank-left (make-fired (make-posn 10 50)
-                                     (make-tank 30 -3)
-                                     (make-posn 30 30)))
-              (make-fired (make-posn 10 50)
-                          (make-tank 30 -3)
-                          (make-posn 30 30)))
+(check-expect (tank-left (make-sigs (make-posn 10 50)
+                                    (make-tank 30 3)
+                                    (make-posn 30 30)))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 -3)
+                         (make-posn 30 30)))
+(check-expect (tank-left (make-sigs (make-posn 10 50)
+                                    (make-tank 30 -3)
+                                    (make-posn 30 30)))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 -3)
+                         (make-posn 30 30)))
 
 ;(define (tank-left s) s)  ;stub
 
 (define (tank-left s)
-  (cond [(aim? s)
-         (make-aim (aim-ufo s)
-                   (tank-turn-left (aim-tank s)))]
-        [(fired? s)
-         (make-fired (fired-ufo s)
-                     (tank-turn-left (fired-tank s))
-                     (fired-missile s))]))
+  (cond [(boolean? (sigs-missile s))
+         (make-sigs (sigs-ufo s)
+                    (tank-turn-left (sigs-tank s))
+                    #false)]
+        [(posn? (sigs-missile s))
+         (make-sigs (sigs-ufo s)
+                     (tank-turn-left (sigs-tank s))
+                     (sigs-missile s))]))
 
 ; Tank -> Tank
 ; turn Tank right (+)
@@ -518,34 +534,38 @@
 
 ; SIGS -> SIGS
 ; turn tank right (set velocity +)
-(check-expect (tank-right (make-aim (make-posn 10 50) (make-tank 30 3)))
-              (make-aim (make-posn 10 50) (make-tank 30 3)))
-(check-expect (tank-right (make-aim (make-posn 10 50) (make-tank 30 -3)))
-              (make-aim (make-posn 10 50) (make-tank 30 3)))
+(check-expect (tank-right (make-sigs (make-posn 10 50)
+                                     (make-tank 30 3)
+                                     #false))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 3)
+                         #false))
+(check-expect (tank-right (make-sigs (make-posn 10 50)
+                                     (make-tank 30 -3)
+                                     #false))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 3)
+                         #false))
 
-(check-expect (tank-right (make-fired (make-posn 10 50)
-                                      (make-tank 30 3)
-                                      (make-posn 30 30)))
-              (make-fired (make-posn 10 50)
-                          (make-tank 30 3)
-                          (make-posn 30 30)))
-(check-expect (tank-right (make-fired (make-posn 10 50)
-                                      (make-tank 30 -3)
-                                      (make-posn 30 30)))
-              (make-fired (make-posn 10 50)
-                          (make-tank 30 3)
-                          (make-posn 30 30)))
+(check-expect (tank-right (make-sigs (make-posn 10 50)
+                                     (make-tank 30 3)
+                                     (make-posn 30 30)))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 3)
+                         (make-posn 30 30)))
+(check-expect (tank-right (make-sigs (make-posn 10 50)
+                                     (make-tank 30 -3)
+                                     (make-posn 30 30)))
+              (make-sigs (make-posn 10 50)
+                         (make-tank 30 3)
+                         (make-posn 30 30)))
 
 ;(define (tank-right s) s)  ;stub
 
 (define (tank-right s)
-  (cond [(aim? s)
-         (make-aim (aim-ufo s)
-                   (tank-turn-right (aim-tank s)))]
-        [(fired? s)
-         (make-fired (fired-ufo s)
-                     (tank-turn-right (fired-tank s))
-                     (fired-missile s))]))
+  (make-sigs (sigs-ufo s)
+             (tank-turn-right (sigs-tank s))
+             (sigs-missile s)))
 
 ; Tank -> Tank
 ; turn Tank right (+)
@@ -562,55 +582,25 @@
 
 ; SIGS -> SIGS
 ; fire a missile (convert an Aim to a Fired)
-(check-expect (fire-missile (make-aim (make-posn 25 30)
-                                      (make-tank 20 3)))
-              (make-fired (make-posn 25 30)
-                          (make-tank 20 3)
-                          (make-posn (+ 20 3) (- HEIGHT H-TANK-HEIGHT))))
-
-(check-expect (fire-missile (make-fired (make-posn 25 30)
-                                        (make-tank 20 3)
-                                        (make-posn 40 10)))
-              (make-fired (make-posn 25 30)
-                          (make-tank 20 3)
-                          (make-posn (+ 20 3) (- HEIGHT H-TANK-HEIGHT))))
+(check-expect (fire-missile (make-sigs (make-posn 25 30)
+                                       (make-tank 20 3)
+                                       #false))
+              (make-sigs (make-posn 25 30)
+                         (make-tank 20 3)
+                         (make-posn (+ 20 3) (- HEIGHT H-TANK-HEIGHT))))
 
 ; (define (fire-missile s) s)  ;stub
 
 (define (fire-missile s)
-  (cond [(aim? s)
-         (make-fired (aim-ufo s)
-                     (aim-tank s)
-                     (make-posn (+ (tank-loc (aim-tank s))
-                                   (tank-vel (aim-tank s)))
-                                (- HEIGHT H-TANK-HEIGHT)))]
-        [(fired? s)
-         (make-fired (fired-ufo s)
-                     (fired-tank s)
-                     (make-posn (+ (tank-loc (fired-tank s))
-                                   (tank-vel (fired-tank s)))
-                                (- HEIGHT H-TANK-HEIGHT)))]))
+  (create-fire-missile (sigs-ufo s)
+                       (sigs-tank s)))
 
-;;;;;;;;;;;;;
-;; Ex. 114 - check-with
+(define (create-fire-missile ufo tank)
+  (make-sigs (make-posn (posn-x ufo) (posn-y ufo))
+             (make-tank (tank-loc tank) (tank-vel tank))
+             (make-posn (posn-x (+ (tank-loc tank) (tank-vel tank)))
+                        (- HEIGHT H-TANK-HEIGHT))))
 
-; Any -> Boolean
-; is any a SIGS?
-
-(check-expect (SIGS? (make-aim (make-posn 10 10)
-                               (make-tank 20 3)))
-              #true)
-(check-expect (SIGS? (make-fired (make-posn 10 10)
-                                 (make-tank 20 2)
-                                 (make-posn 10 20)))
-              #true)
-(check-expect (SIGS? "SIGS") #false)
-(check-expect (SIGS? #true) #false)
-(check-expect (SIGS? 10) #false)
-(check-expect (SIGS? (make-posn 10 20)) #false)
-
-(define (SIGS? v)
-  (or (aim? v) (fired? v)))
 
 
 
@@ -618,10 +608,8 @@
 ;; start the world with (main (make-aim (make-posn 50 00) (make-tank 20 3)))
 
 (define (main ws)
-  (big-bang ws                        ; SIGS
-            [check-with SIGS?]        ; Any -> Boolean
-            [on-tick   si-move 0.2]   ; SIGS -> SIGS
-            [to-draw   si-render]     ; SiGS -> Image
-            [stop-when si-game-over?] ; SIGS -> Boolean
-            ;(on-mouse  ...)          ; SIGS Integer Integer MouseEvent -> SIGS
-            [on-key si-control]))     ; SIGS KeyEvent -> SIGS
+  (big-bang ws                        ; SIGS.v2
+            [on-tick   si-move 0.2]   ; SIGS.v2 -> SIGS
+            [to-draw   si-render]     ; SiGS.v2 -> Image
+            [stop-when si-game-over?] ; SIGS.v2 -> Boolean
+            [on-key si-control]))     ; SIGS.v2 KeyEvent -> SIGS.v2
