@@ -200,7 +200,7 @@
 ; adds TANK, UFO, and possibly MISSILE to
 ; the BACKGROUND scene
 
-(define (si-render s)
+(define (si-render.v2 s)
   (tank-render (sigs-tank s)
                (ufo-render (sigs-ufo s)
                            (missile-render.v2 (sigs-missile s)
@@ -235,7 +235,7 @@
 ; adds an image of missile m to scene s
 ; - #false
 ; - Posn
-(check-expect (missile-render.v2 #false BACKGROUND) #false)
+(check-expect (missile-render.v2 #false BACKGROUND) BACKGROUND)
 (check-expect (missile-render.v2 (make-posn 32 (- HEIGHT TANK-HEIGHT 10))
                                  BACKGROUND)
               (place-image MISSILE 32 (- HEIGHT TANK-HEIGHT 10)
@@ -243,11 +243,11 @@
 
 ; (define (missile-render.v2 m im)
 
-(define (missile-render.v2 m s)
+(define (missile-render.v2 m im)
   (cond
-    [(boolean? m) #false]  ; #2
+    [(boolean? m) im]  ; #2
     [(posn? m)
-     (place-image MISSILE (posn-x m) (posn-y m) s)]))
+     (place-image MISSILE (posn-x m) (posn-y m) im)]))
 
 
 
@@ -274,28 +274,33 @@
 
 
 (check-expect (si-game-over?    ; not landed, no missle
-               (make-aim (make-posn 20 100)
-                         (make-tank 10 3)))
+               (make-sigs (make-posn 20 100)
+                          (make-tank 10 3)
+                          #false))
               #false)
 
 (check-expect (si-game-over?   ; landed, no missle
-               (make-aim (make-posn 20 (- HEIGHT H-UFO-HEIGHT))
-                         (make-tank 10 3)))
+               (make-sigs (make-posn 20 (- HEIGHT H-UFO-HEIGHT))
+                          (make-tank 10 3)
+                          #false))
               #true)
 
 (check-expect (si-game-over?   ; landed, no hit
-               (make-fired (make-posn 20 (- HEIGHT H-UFO-HEIGHT))
-                           (make-tank 10 3) (make-posn 10 10)))
+               (make-sigs (make-posn 20 (- HEIGHT H-UFO-HEIGHT))
+                          (make-tank 10 3)
+                          (make-posn 10 10)))
               #true)
 
 (check-expect (si-game-over?   ; not landed, no hit
-               (make-fired (make-posn 20 100)
-                           (make-tank 10 3) (make-posn 10 10)))
+               (make-sigs (make-posn 20 100)
+                          (make-tank 10 3)
+                          (make-posn 10 10)))
               #false)
 
 (check-expect (si-game-over?   ; not landed, hit!
-               (make-fired (make-posn 20 100)
-                           (make-tank 10 3) (make-posn 20 100)))
+               (make-sigs (make-posn 20 100)
+                          (make-tank 10 3)
+                          (make-posn 20 100)))
               #true)
 
 
@@ -598,7 +603,7 @@
 (define (create-fire-missile ufo tank)
   (make-sigs (make-posn (posn-x ufo) (posn-y ufo))
              (make-tank (tank-loc tank) (tank-vel tank))
-             (make-posn (posn-x (+ (tank-loc tank) (tank-vel tank)))
+             (make-posn (+ (tank-loc tank) (tank-vel tank))
                         (- HEIGHT H-TANK-HEIGHT))))
 
 
@@ -610,6 +615,6 @@
 (define (main ws)
   (big-bang ws                        ; SIGS.v2
             [on-tick   si-move 0.2]   ; SIGS.v2 -> SIGS
-            [to-draw   si-render]     ; SiGS.v2 -> Image
+            [to-draw   si-render.v2]  ; SiGS.v2 -> Image
             [stop-when si-game-over?] ; SIGS.v2 -> Boolean
             [on-key si-control]))     ; SIGS.v2 KeyEvent -> SIGS.v2
