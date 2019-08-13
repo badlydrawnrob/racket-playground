@@ -166,6 +166,14 @@
 
 
 ;; Tests for fits?
+(check-expect (fits? (make-spider 6 5)
+                     (make-cage 1)) #false)
+(check-expect (fits? (make-elephant 200)
+                     (make-cage 6)) #true)
+(check-expect (fits? (make-boa 5 10)
+                     (make-cage 3.5)) #false)
+(check-expect (fits? (make-armadillo 6 4 (* 6 4))  ; #!
+                     (make-cage 3)) #true)
 
 
 ; Animal Cage -> Boolean?
