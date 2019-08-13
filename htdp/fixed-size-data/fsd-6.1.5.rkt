@@ -3,12 +3,17 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname fsd-6.1.5) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;; 6.1 Other itemizations
 ;; ======================
+;; Some functions have been considered, but not written
+;; as design-decisions can get complex fast!
+;;
+;; #!: See wishlist for possible routes
+;;
 ;; #!: There are many ways to represent data and states
 ;;
-;;     != How you structure your data representation
-;;        has a big effect on the rest of your functions/program
+;;     How you structure your data representation
+;;     has a big effect on the rest of your functions/program
 ;;
-;;        + see the various design recipies as a guideline.
+;;     + see the various design recipies as a guideline.
 ;;
 ;; #!: Reduce repetition wherever you can
 ;;
@@ -18,8 +23,15 @@
 ;;     #! you may only need one or the other, i.e:
 ;;        space->cage or cage->space
 ;;
-;; #2: Shouldn't I be able to just use the predicate,
-;;     without the right-side or else?
+;;     #! also, <= may make it a very tight squeeze!
+;;
+;; #2: It may be that you ALWAYS need a conditional "question"
+;;     and an "answer" (left side, right side) ... you can use a
+;;     predicate on the right side, but possible not just a single
+;;     predicate per condition (only a left side)
+;;
+;;     #! we make sure to have every possibile (enumeration?)
+;;        option catered for ...
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -31,20 +43,27 @@
 
 
 
-; Wish list
-;; --------
+;; Wish list
+;; =========
+;; Some possible routes that we could build out
 
-; spider legs calculator?
-; lost-tail calculator?
-; stick to Cube only or have different sized cages?
-; fits? needs to consume an animal-space and a Cage
-;       - you may need an auxiliary func to determine
-;         which animal ...
+; 1. A spider legs calculator?
+; 2. A lost-tail calculator?
+; 3. Different sized cages (not just a cubic box)
+; 4. fits? consumes an animal-space and a cage
+;    - auxiliary function could be used to determine
+;      which animal it is, if the (cond ...) needs to
+;      return a more complicated value.
+;    - for instance, you may need to run #1 or #2
+;      to re-calculate animal-space
+; 5. (exact-round ...) doesn't work in beginner language
+;    - @link: https://stackoverflow.com/a/35381207
+; 6. It might be a tight squeeze! Should we give each
+;    animal some space to walk around?
+
+
 ; split out maths functions? (cube ...) (inverse-cube ...)
 ; exact-round weird numbers (doesn't work in beginner lang)
-
-
-
 
 
 
@@ -53,11 +72,23 @@
 ;; ============
 ;; Develop a data representation for 4 zoo animals
 
+
+
+
+;; Types
+;; -----
+
 ; Space is a Number
 ; represents the volume of a Cage
 
 ; Edge is a Number
 ; represents one side of a (square) Cage
+
+
+
+
+;; The Cage
+;; --------
 
 (define-struct cage [edge])
 ; A Cage is a structure
@@ -80,6 +111,11 @@
 (check-expect (space->cage 27) (make-cage 3))
 
 
+
+
+
+;; The animals
+;; -----------
 
 (define-struct spider [legs space])
 ; A spider is a structure
@@ -105,6 +141,7 @@
 ;   (make-constrictor Number Number)
 ; length and girth
 
+(define (boa-space b) (* (boa-length b) (boa-girth b)))
 
 (define-struct armadillo [tail body space])
 ; An Armadillo is a structure
@@ -114,30 +151,28 @@
 
 
 
-;; Consuming the animals
-;; =====================
+;; Checking the space
+;; ------------------
 
 ; Animals -> ???
-; template to consume whatever animal you throw at it
+; you want a conditional template to ask:
+; - which animal is it?
 (define (func-for-animals a)
-  (... (func-for-spider ...)
-       (func-for-elephant ...)
-       (func-for-boa ...)
-       (func-for-armadillo ...)))
-
-; needs extracting attributes  #!
-
-(define (animal-space a)
-  ...)
+  (cond
+    [(spider? a) ...]
+    [(elephant? a) ...]
+    [(boa? a) ...]
+    [(armadillo? a) ...]))
 
 
-;; Checking space
-;; ==============
+;; Tests for fits?
+
 
 ; Animal Cage -> Boolean?
 ; determines if cages volume is large enough for Animal
 (define (fits? a c)
   (cond
-    [(<= (elephant-space a) 
-         (cage->space c)) #true]  ; #1, #2
-    [else #false]))
+    [(spider? a) (<= (spider-space a) (cage->space c))]  ; #1, #2
+    [(elephant? a) (<= (elephant-space a) (cage->space c))]
+    [(boa? a) (<= (boa-space a) (cage->space c))]
+    [(armadillo? a) (<= (armadillo-space a) (cage->space c))]))
