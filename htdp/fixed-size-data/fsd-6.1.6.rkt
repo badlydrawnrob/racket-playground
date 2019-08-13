@@ -10,6 +10,14 @@
 (require 2htdp/universe)
 
 
+
+; Wish list
+; 1. auxiliary function so graph-posn isn't repeated?
+; 2. do I need to give other data representations?
+; 3. Simplify to it's most basic form
+;    - we don't really need a function or a struct for x and y
+
+
 ;; Exercise 105
 ;; ============
 ;; 1. Make at least two data examples per clause in the
@@ -82,7 +90,4 @@
 (render (make-graph (cartesian-point (x-co 20) (y-co -25)) BACKGROUND))
 
 
-; Wish list
-; 1. auxiliary function so graph-posn isn't repeated?
-; 2. do I need to give other data representations?
             
