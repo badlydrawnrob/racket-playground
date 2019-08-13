@@ -78,6 +78,10 @@
                (posn-x (graph-posn g)) (posn-y (graph-posn g))
                (graph-img g)))
 
+; Test it
+(render (make-graph (cartesian-point (x-co 20) (y-co -25)) BACKGROUND))
+
+
 ; Wish list
 ; 1. auxiliary function so graph-posn isn't repeated?
 ; 2. do I need to give other data representations?
