@@ -17,6 +17,9 @@
 ;;
 ;; #!: Reduce repetition wherever you can
 ;;
+;;     + It's not entirely necessary to split out the maths functions
+;;       but it does make them reusable and reduces nesting!
+;;
 ;; #1: Not 100% sure if this is correct. You're inversing the
 ;;     exponent with log: https://math.stackexchange.com/a/956787
 ;;
@@ -62,10 +65,6 @@
 ;    animal some space to walk around?
 
 
-; split out maths functions? (cube ...) (inverse-cube ...)
-; exact-round weird numbers (doesn't work in beginner lang)
-
-
 
 
 ;; Exercise 103
@@ -84,6 +83,9 @@
 ; Edge is a Number
 ; represents one side of a (square) Cage
 
+; Volume is a Number
+; represents a cubic volume
+
 
 
 
@@ -99,16 +101,33 @@
 ; Cage -> Space
 ; converts a cage to a volume
 (define (cage->space c)
-  (expt (cage-edge c) 3))
+  (cube (cage-edge c)))
 
 (check-expect (cage->space (make-cage 3)) 27)
+
+; Edge -> Volume
+; convert a cube's edge to it's volume
+(define (cube e)
+  (expt e 3))  ; #!
+
+(check-expect (cube 3) 27)
+
 
 ; Space -> Cage
 ; converts a Space to a Cage
 (define (space->cage vol)
-  (make-cage (inexact->exact (log vol 3)))) ; #1
+  (make-cage (reverse-cube vol)))
 
 (check-expect (space->cage 27) (make-cage 3))
+
+; Volume -> Edge
+; converts to a cube's edge
+(define (reverse-cube vol)
+  (inexact->exact (log vol 3)))  ; #1
+
+(check-expect (reverse-cube 27) 3)
+
+
 
 
 
