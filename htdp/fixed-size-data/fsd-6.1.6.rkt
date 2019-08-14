@@ -5,17 +5,31 @@
 ;; ======================
 ;; Some functions have been considered, but not written
 ;; as design-decisions can get complex fast!
+;;
+;; #!: Where is origin?!
+;;
+;;     [0,0] with (place-image ...) is from-top-left
+;;     [0,0] with a cartesian point is from-bottom-left
+;;
+;;     Your functions are dependent on your mental-model of
+;;     the state and it's visual representation
+;;
+;; #1: We're using the from-top-left model, so we'd need to flip
+;;     the NegativeNumber to a positive.
+
 
 (require 2htdp/image)
 (require 2htdp/universe)
 
 
 
+
 ; Wish list
+; ---------
 ; 1. auxiliary function so graph-posn isn't repeated?
-; 2. do I need to give other data representations?
-; 3. Simplify to it's most basic form
-;    - we don't really need a function or a struct for x and y
+; 2. what other data representations could there be?
+
+
 
 
 ;; Exercise 105
@@ -32,40 +46,32 @@
 ; - a Posn
 ; interpretation and ordinary Cartesian point
 
-(define WIDTH 200)
-(define HEIGHT 200)
+(define WIDTH 100)
+(define HEIGHT 100)
 (define BACKGROUND
   (empty-scene WIDTH HEIGHT))
 (define CIRCLE
   (circle 1 "solid" "red"))
 
+(define Y1 -5)
+(define Y2 -25)
+(define X1 5)
+(define X2 15)
 
-; NegativeNumber -> NegativeNumber
-(define (y-co y) y)
-; (define-struct y-coordinate [n])
-
-(check-expect (y-co -1) -1)
 
 ; NegativeNumber -> PositiveNumber
 ; auxiliary function for cartesian-point
 (define (y-positive y)
   (abs y))
 
-(check-expect (y-positive -1) 1)
-
-; PositiveNumber -> PositiveNumber
-(define (x-co x) x)
-; (define-struct x-coordinate [x])
-
-(check-expect (x-co 5) 5)
-
+(check-expect (y-positive Y1) 5)
 
 ; PositiveNumber NegativeNumber -> Posn
 ; Takes two coordinates and returns a cartesian point
 (define (cartesian-point x y)
-  (make-posn x (y-positive y)))
+  (make-posn x (y-positive y))) ; #1
 
-(check-expect (cartesian-point (x-co 5) (y-co -5)) (make-posn 5 5))
+(check-expect (cartesian-point X1 Y1) (make-posn 5 5))
 
 (define-struct graph [posn img])
 ; A graph is a structure
@@ -87,7 +93,8 @@
                (graph-img g)))
 
 ; Test it
-(render (make-graph (cartesian-point (x-co 20) (y-co -25)) BACKGROUND))
+(render (make-graph (cartesian-point X1 Y1) BACKGROUND))
+(render (make-graph (cartesian-point X2 Y2) BACKGROUND))
 
 
             
