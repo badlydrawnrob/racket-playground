@@ -100,11 +100,52 @@
 (define (double value)
   (* 2 value))
 
+(check-eq? (double 2) 4)
+(check-eq? (double 0) 0)
+
 ; Function Number -> Number
 ; apply (double ...) to value, twice! 
 (define (apply-twice fn value)
   (fn (fn value)))
 
-(check-eq? (apply-twice double 2) 4)
-(check-eq? (apply-twice double 0) 0)
+(check-eq? (apply-twice double 2) 8)
 
+
+; Mapping
+; -------
+; Map takes a function and a list
+; — applies function to each list item
+; — returns new list
+
+; List -> List
+(map double (list 3 4 5)) ; '(6 8 10)
+
+
+; Code as data
+; ------------
+; Creates a quote: '(...)
+
+(define s (list '+ 4 7)) ; '(+ 4 7)
+
+
+; Evaluating data (as code)
+; -------------------------
+; Typing this into terminal evaluates the expression
+; turning the list into a proper addition function
+;
+; > (eval s)
+
+
+
+
+;; Allowing you to do some interesting stuff
+;; =========================================
+
+; List -> Symbol
+; creates symbol of operator, and tail of list
+(define (switchop a) (cons '* (cdr a))) ; '(1 2 3) -> '(* 2 3)
+(define s2 (switchop s)) ; Converts '(+ 4 7) -> '(* 4 7)
+
+; Now our original quote is changed
+; ---------------------------------
+; > (eval s2)
