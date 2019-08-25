@@ -140,6 +140,8 @@
 
 ;; Allowing you to do some interesting stuff
 ;; =========================================
+;; Converting some data into different data
+;; - for example, a part of a quote
 
 ; List -> Symbol
 ; creates symbol of operator, and tail of list
