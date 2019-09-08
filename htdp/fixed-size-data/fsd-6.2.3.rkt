@@ -70,7 +70,7 @@
 ; - WALK
 
 ; Countdown is a Number
-; - range[10->0]
+; - range[0,10] (in reverse, 10 second countdown)
 
 (define-struct crossing [state countdown])
 ; A Crossing is a struct
