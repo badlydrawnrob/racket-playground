@@ -127,3 +127,61 @@
 
 
 
+;; The states
+;; ----------
+
+
+(define (tock c)
+  (cond
+    [(string=? DONT-WALK (crossing-state c)) c]
+    [((string=? WALK (crossing-state c))
+     (make-crossing "walk" (reduce-countdown (crossing-countdown c)))]
+    [(and (string=? WALK)
+          (not (w))  ; #2
+
+
+
+; Number -> Number
+(define (reduce-countdown num)
+  (if (walk? num)
+      (- num 1)
+      10))
+
+(check-expect (reduce-countdown 11) 10)
+(check-expect (reduce-countdown 0) 10)
+(check-expect (reduce-countdown 10) 9)
+
+
+(define (change-state? str num)
+  (cond
+    [(= 10 num) (make-
+
+
+
+
+;; KeyEvent
+;; --------
+
+(define (event c ke)
+  (cond
+    [(key=? " " ke) (make-crossing "walk" 10)]
+    [else c]))
+
+(check-expect (event CROSS1 "c") CROSS1)
+(check-expect (event CROSS1 " ") (make-crossing "walk" 10))
+
+
+
+
+;; Running the program
+;; -------------------
+
+;(define (main c)
+;  (big-bang
+;    [on-tick tock]
+;    [to-draw render]
+;    [on-key event]))
+
+
+
+
