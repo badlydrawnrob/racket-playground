@@ -4,7 +4,12 @@
 ;; 6.2 Mixing up worlds
 ;; ====================
 ;;
-;; != In retrospect, may have been best to use 2 structs for each state
+;; != Could have used 3 structs for each state?
+;;    - A couple of minor bits ripped from `108_pedestrian_light.rkt`
+;;    - (zero? ...) is quite clever as used for 2 states
+;;
+;;      - TRUTHY! So the first (cond ...) takes priority
+;;      - Order matters.
 ;;
 ;; != There's a few ways to do this. SKETCH IT OUT!
 ;;    - Two structs for the states
@@ -14,7 +19,7 @@
 ;;
 ;; #1: You don't need to add any struct information to image
 ;;     as it's static (see 6.1.3.rkt)
-;; #2: Switch back to walk
+;; #2: Switch state
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -40,8 +45,11 @@
 (define RED "red")
 (define GREEN "green")
 (define ORANGE "orange")
+(define BLACK "black")
 (define DONT-WALK "stop")
 (define WALK "go")
+(define CAREFUL! "count")
+(define COUNT 9) ; 0 counts as a second
 
 ; graphical
 (define STOP (bitmap "io/pedestrian_traffic_light_red.png"))
@@ -65,9 +73,11 @@
 ; State tells us if we can walk
 ; Countdown tells us how long we have to walk
 
-(define CROSS1 (make-crossing DONT-WALK 10))
-(define CROSS2 (make-crossing WALK 10))
+(define CROSS1 (make-crossing DONT-WALK 0))
+(define CROSS2 (make-crossing WALK 9))
 (define CROSS3 (make-crossing WALK 0))
+(define CROSS4 (make-crossing CAREFUL! 9))
+(define CROSS5 (make-crossing CAREFUL! 0))
 
 
 
@@ -81,8 +91,9 @@
     [(string=? DONT-WALK (crossing-state c))
      (render-stop (render-scene RED))]
     [(string=? WALK (crossing-state c))
-     (render-countdown (crossing-countdown c)
-                       (render-go (render-scene GREEN)))]))
+     (render-go (render-scene GREEN))]
+    [(string=? CAREFUL! (crossing-state c))
+     (render-countdown (crossing-countdown c) (render-scene BLACK))]))
 
 
 ; Color -> Image
@@ -120,14 +131,14 @@
 
 ; Number -> Boolean?
 (define (walk? n)
-  (if (and (> n 0) (<= n 10))
+  (if (and (> n 0) (<= n 9))
       #true
       #false))
 
 (check-expect (walk? 0) #false)
 (check-expect (walk? 1) #true)
-(check-expect (walk? 10) #true)
-(check-expect (walk? 11) #false)
+(check-expect (walk? 9) #true)
+(check-expect (walk? 10) #false)
 
 
 
@@ -139,20 +150,34 @@
 (define (tock c)
   (cond
     [(string=? DONT-WALK (crossing-state c)) c]
-    [(string=? WALK (crossing-state c))
-     (cond
-       [(not (walk? (crossing-countdown c))) CROSS1]  ; #2
-       [else (make-crossing WALK (reduce-countdown (crossing-countdown c)))])]))
+    [(zero? (crossing-countdown c))
+     (switch-state c)]  ; #2
+    [else
+     (make-crossing (crossing-state c)
+                    (reduce-countdown (crossing-countdown c)))]))
 
 (check-expect (tock CROSS1) CROSS1)
-(check-expect (tock CROSS2) (make-crossing "go" 9))
-(check-expect (tock CROSS3) CROSS1)
+(check-expect (tock CROSS2) (make-crossing WALK 8))
+(check-expect (tock CROSS3) CROSS4)
+(check-expect (tock CROSS4) (make-crossing CAREFUL! 8))
+(check-expect (tock CROSS5) CROSS1)
 
+
+; Crossing -> Crossing
+(define (switch-state c)
+  (cond
+    [(string=? WALK (crossing-state c))
+     (make-crossing CAREFUL! COUNT)]
+    [else
+     (make-crossing DONT-WALK 0)]))
+
+(check-expect (switch-state CROSS3) CROSS4)
+(check-expect (switch-state CROSS5) CROSS1)
 
 
 ; Number -> Number
 (define (reduce-countdown num)
-  (- num 1))
+  (sub1 num))
 
 (check-expect (reduce-countdown 10) 9)
 (check-expect (reduce-countdown 1) 0)
@@ -178,7 +203,7 @@
 
 (define (main c)
   (big-bang c
-    [on-tick tock 2]
+    [on-tick tock .7]
     [to-draw render]
     [on-key event]))
 
