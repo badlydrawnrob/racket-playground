@@ -17,9 +17,14 @@
 ;;
 ;; != Keep naming conventions consistant ("stop" "go" etc)
 ;;
+;;
 ;; #1: You don't need to add any struct information to image
 ;;     as it's static (see 6.1.3.rkt)
+;;
 ;; #2: Switch state
+;;
+;; #3: The old predicate isn't needed
+;;     (zero? ...) is much more graceful in this case.
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -126,23 +131,6 @@
 
 
 
-;; Checking state
-;; --------------
-
-; Number -> Boolean?
-(define (walk? n)
-  (if (and (> n 0) (<= n 9))
-      #true
-      #false))
-
-(check-expect (walk? 0) #false)
-(check-expect (walk? 1) #true)
-(check-expect (walk? 9) #true)
-(check-expect (walk? 10) #false)
-
-
-
-
 ;; The states
 ;; ----------
 
@@ -154,7 +142,7 @@
      (switch-state c)]  ; #2
     [else
      (make-crossing (crossing-state c)
-                    (reduce-countdown (crossing-countdown c)))]))
+                    (sub1 (crossing-countdown c)))]))
 
 (check-expect (tock CROSS1) CROSS1)
 (check-expect (tock CROSS2) (make-crossing WALK 8))
@@ -175,12 +163,22 @@
 (check-expect (switch-state CROSS5) CROSS1)
 
 
-; Number -> Number
-(define (reduce-countdown num)
-  (sub1 num))
 
-(check-expect (reduce-countdown 10) 9)
-(check-expect (reduce-countdown 1) 0)
+;; #3
+
+; Number -> Boolean?
+; (define (walk? n)
+;   (if (and (> n 0) (<= n 9))
+;       #true
+;       #false))
+
+; (check-expect (walk? 0) #false)
+; (check-expect (walk? 1) #true)
+; (check-expect (walk? 9) #true)
+; (check-expect (walk? 10) #false)
+
+
+
 
 
 
