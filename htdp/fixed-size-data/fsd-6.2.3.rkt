@@ -4,12 +4,17 @@
 ;; 6.2 Mixing up worlds
 ;; ====================
 ;;
+;; != In retrospect, may have been best to use 2 structs for each state
+;;
 ;; != There's a few ways to do this. SKETCH IT OUT!
 ;;    - Two structs for the states
 ;;    - One struct with a string for the state
 ;;
+;; != Keep naming conventions consistant ("stop" "go" etc)
+;;
 ;; #1: You don't need to add any struct information to image
 ;;     as it's static (see 6.1.3.rkt)
+;; #2: Switch back to walk
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -134,28 +139,23 @@
 (define (tock c)
   (cond
     [(string=? DONT-WALK (crossing-state c)) c]
-    [((string=? WALK (crossing-state c))
-     (make-crossing "walk" (reduce-countdown (crossing-countdown c)))]
-    [(and (string=? WALK)
-          (not (w))  ; #2
+    [(string=? WALK (crossing-state c))
+     (cond
+       [(not (walk? (crossing-countdown c))) CROSS1]  ; #2
+       [else (make-crossing WALK (reduce-countdown (crossing-countdown c)))])]))
+
+(check-expect (tock CROSS1) CROSS1)
+(check-expect (tock CROSS2) (make-crossing "go" 9))
+(check-expect (tock CROSS3) CROSS1)
 
 
 
 ; Number -> Number
 (define (reduce-countdown num)
-  (if (walk? num)
-      (- num 1)
-      10))
+  (- num 1))
 
-(check-expect (reduce-countdown 11) 10)
-(check-expect (reduce-countdown 0) 10)
 (check-expect (reduce-countdown 10) 9)
-
-
-(define (change-state? str num)
-  (cond
-    [(= 10 num) (make-
-
+(check-expect (reduce-countdown 1) 0)
 
 
 
@@ -164,11 +164,11 @@
 
 (define (event c ke)
   (cond
-    [(key=? " " ke) (make-crossing "walk" 10)]
+    [(key=? " " ke) (make-crossing WALK 10)]
     [else c]))
 
 (check-expect (event CROSS1 "c") CROSS1)
-(check-expect (event CROSS1 " ") (make-crossing "walk" 10))
+(check-expect (event CROSS1 " ") (make-crossing WALK 10))
 
 
 
@@ -176,11 +176,11 @@
 ;; Running the program
 ;; -------------------
 
-;(define (main c)
-;  (big-bang
-;    [on-tick tock]
-;    [to-draw render]
-;    [on-key event]))
+(define (main c)
+  (big-bang c
+    [on-tick tock 2]
+    [to-draw render]
+    [on-key event]))
 
 
 
