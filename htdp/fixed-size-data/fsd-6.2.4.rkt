@@ -4,11 +4,10 @@
 ;;;; 6.2 Mixing up worlds
 ;;;; ====================
 ;;;;
-;;;; !# CAN'T GET THIS TO RENDER
-;;;;    — See: 109_finite_sm.rkt in answers
-;;;;           (my method is too complex, even if the component
-;;;;            parts *should* work)
-;;;;
+;;;; !# THIS VERSION IS WRONG
+;;;;    - It almost works but won't render for some reason
+;;;;    — This method is more complex than it needs to be
+;;;;      * See: 109_finite_sm.rkt in answers
 ;;;;
 ;;;; !# I'm sure this could be done better with string
 ;;;;    manipulation or a list, but using conditionals
