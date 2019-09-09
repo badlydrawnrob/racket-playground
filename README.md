@@ -1,7 +1,7 @@
 # Racket playground
+## Taking a spin with Dr Racket
 
-Taking a spin with Dr Racket
-
+> ⚠️ The wording in exercises sometimes isn't clear (see answers)
 
 ## Documentation:
 

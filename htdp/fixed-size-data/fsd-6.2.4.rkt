@@ -3,6 +3,13 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname fsd-6.2.4) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;;;; 6.2 Mixing up worlds
 ;;;; ====================
+;;;;
+;;;; !# CAN'T GET THIS TO RENDER
+;;;;    — See: 109_finite_sm.rkt in answers
+;;;;           (my method is too complex, even if the component
+;;;;            parts *should* work)
+;;;;
+;;;;
 ;;;; !# I'm sure this could be done better with string
 ;;;;    manipulation or a list, but using conditionals
 ;;;;
@@ -41,10 +48,12 @@
 (define ER "error, illegal key")
 
 ;; Color is one of:
+;; - EMPTY
 ;; - FIRST
 ;; - LAST
 ;; - ERROR
 
+(define EMPTY "white")
 (define FIRST "yellow")
 (define LAST "green")
 (define ERROR "red")
@@ -60,7 +69,11 @@
 
 ;;; Constants
 ;;; ---------
-(define EMPTY (empty-scene 100 100))
+(define WIDTH 100)
+(define HEIGHT 100)
+(define X (/ WIDTH 2))
+(define Y (/ HEIGHT 2))
+(define BACKGROUND (empty-scene WIDTH HEIGHT))
 
 
 
@@ -93,7 +106,7 @@
 (define (render char)
   (cond
     [(equal? "" (character-string char))
-      EMPTY]
+     (shape (char->img (character-string char)) EMPTY)]
     [(equal? "a" (character-string char))
      (shape (char->img (character-string char)) FIRST)]
     [(equal? "d" (character-string char))
@@ -101,7 +114,7 @@
     [(equal? #false (character-string char))
      (shape (char->img (boolean->string (character-string char))) ERROR)]))
 
-(check-expect (render CHAR0) EMPTY)
+(check-expect (render CHAR0) (shape (char->img "") EMPTY))
 (check-expect (render CHAR1) (shape (char->img "a") FIRST))
 (check-expect (render CHAR4) (shape (char->img "d") LAST))
 (check-expect (render CHAR5) (shape (char->img "#false") ERROR))
@@ -112,10 +125,11 @@
 
 ; Image -> Image
 (define (shape img color)
-  (rectangle (image-width img)
-             (image-height img)
-             "solid"
-             color))
+  (place-image (rectangle (image-width img)
+                          (image-height img)
+                          "solid"
+                          color)
+                X Y BACKGROUND))
 
 
 
