@@ -223,6 +223,7 @@
 ; – a Posn
 ; interpretation an ordinary Cartesian point
 
+; Any -> Boolean
 (define (coordinate? c)
   (cond
     [(number? c) (or (< c 0) (> c 0))]
@@ -235,3 +236,26 @@
 (check-expect (coordinate? -1) #true)
 (check-expect (coordinate? 0) #false)
 (check-expect (coordinate? #true) #false)
+
+
+
+; A VAnimal is either
+; – a VCat
+; – a VCham
+
+(define-struct vcat [x-pos happy])
+(define-struct vcham [x-pos happy color])
+
+(define VANIMAL1 (make-vcat 10 100))
+(define VANIMAL2 (make-vcham 10 100 "green"))
+(define VANIMAL3 #false)
+(define VANIMAL4 "string")
+
+; Any -> Boolean
+(define (vanimal? v)
+  (or (vcat? v) (vcham? v)))
+
+(check-expect (vanimal? VANIMAL1) #true)
+(check-expect (vanimal? VANIMAL2) #true)
+(check-expect (vanimal? VANIMAL3) #false)
+(check-expect (vanimal? VANIMAL4) #false)
