@@ -117,8 +117,12 @@
 ; ----------------------
 
 ; Any Any -> Boolean
+; Input raw values, output #true or #false
 (define (better-checked-make-vec n1 n2)
-  ...)
+  (and (and (number? n1)
+       (positive? n1))
+       (and (number? n2)
+            (positive? n2))))
 
 
 (define VEC1 (make-vec 1 1))
@@ -130,6 +134,14 @@
 (check-expect (checked-make-vec VEC2) MESSAGE2)
 (check-expect (checked-make-vec VEC3) MESSAGE2)
 (check-expect (checked-make-vec VEC4) MESSAGE2)
+(check-expect (better-checked-make-vec (vec-x VEC1)
+                                       (vec-y VEC1)) #true)
+(check-expect (better-checked-make-vec (vec-x VEC2)
+                                       (vec-y VEC2)) #false)
+(check-expect (better-checked-make-vec (vec-x VEC3)
+                                       (vec-y VEC3)) #false)
+(check-expect (better-checked-make-vec (vec-x VEC4)
+                                       (vec-y VEC4)) #false)
 
 
 
