@@ -28,6 +28,10 @@
 ;;;;     - or a Posn
 ;;;;
 ;;;;     Those are the only two values allowed, else #false
+;;;;
+;;;;
+;;;; #2: Take care to make sure your conditions are correct
+;;;;     ALL values need to be correct (so use (and ...))
 
 (require 2htdp/image)
 (require 2htdp/universe)
@@ -214,9 +218,9 @@
 
 (define (safe-coordinate? c1 c2 c3)
   (cond
-    [(< c1 0) #true]
-    [(> c2 1) #true]
-    [(posn? c3) #true]
+    [(and (< c1 0)
+          (> c2 0)
+          (posn? c3)) #true]
     [else #false]))
 
 
