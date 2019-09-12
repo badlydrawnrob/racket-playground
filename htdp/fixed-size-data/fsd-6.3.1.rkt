@@ -20,6 +20,8 @@
 ;;;;    you need to check its INTERNAL details (PosNum NegNum) it's
 ;;;;    best to pass RAW VALUES (rather than Struct -> Boolean)
 ;;;;
+;;;;    - also avoids repetition!
+;;;;
 ;;;;
 ;;;; #1: You don't need to include all variables
 ;;;;     just those that you need to check against ...
@@ -105,9 +107,9 @@
 (define (checked-make-vec v)
   (cond
     [(and (and (number? (vec-x v))
-               (positive? (vec-x v)))
+               (positive? (vec-x v)))  ; #!
           (and (number? (vec-y v))
-               (positive? (vec-y v))))
+               (positive? (vec-y v)))) ; #!
      (make-vec (vec-x v) (vec-y v))]
     [else MESSAGE2]))
 
@@ -175,11 +177,14 @@
 ;;; Use an OR expression instead
 
 (define (or-missile-or-not? v)
-  (cond
-    [(or (false? v)
-         (posn? v)) #true]
-    [else #false]))
+  (or (false? v) (posn? v)))
 
+(check-expect (or-missile-or-not? #false) #true)
+(check-expect (or-missile-or-not? (make-posn 9 2)) #true)
+(check-expect (or-missile-or-not? "yellow") #false)
+(check-expect (or-missile-or-not? #true) #false)
+(check-expect (or-missile-or-not? 10) #false)
+(check-expect (or-missile-or-not? empty-image) #false)
 
 
 ;;; Exercise 113
@@ -196,10 +201,7 @@
 (define-struct fired [ufo tank missile])
 
 (define (sigs? s)
-  (cond
-    [(or (aim? s)
-         (fired? s)) #true]
-    [else #false]))
+  (or (aim? s) (fired? s)))
 
 ; A Coordinate is one of: 
 ; – a NegativeNumber 
