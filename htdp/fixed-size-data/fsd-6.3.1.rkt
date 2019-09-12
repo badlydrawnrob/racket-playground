@@ -223,30 +223,15 @@
 ; – a Posn
 ; interpretation an ordinary Cartesian point
 
-(define-struct coordinate [neg pos posn])
-
-(define COORD1 (make-coordinate -1 1 (make-posn 1 1)))
-(define COORD2 (make-coordinate 1 1 (make-posn 1 1)))
-(define COORD3 (make-coordinate -1 1 #false))
-(define COORD4 (make-coordinate  -1 0 (make-posn 1 1)))
-
-(define (safe-coordinate? c1 c2 c3)
+(define (coordinate? c)
   (cond
-    [(and (< c1 0)
-          (> c2 0)
-          (posn? c3)) #true]
+    [(number? c) (or (< c 0) (> c 0))]
+    [(posn? c) #true]
     [else #false]))
 
 
-(check-expect (safe-coordinate? (coordinate-neg COORD1)
-                                (coordinate-pos COORD1)
-                                (coordinate-posn COORD1)) #true)
-(check-expect (safe-coordinate? (coordinate-neg COORD2)
-                                (coordinate-pos COORD2)
-                                (coordinate-posn COORD2)) #false)
-(check-expect (safe-coordinate? (coordinate-neg COORD3)
-                                (coordinate-pos COORD3)
-                                (coordinate-posn COORD3)) #false)
-(check-expect (safe-coordinate? (coordinate-neg COORD4)
-                                (coordinate-pos COORD4)
-                                (coordinate-posn COORD4)) #false)
+(check-expect (coordinate? (make-posn 1 1)) #true)
+(check-expect (coordinate? 1) #true)
+(check-expect (coordinate? -1) #true)
+(check-expect (coordinate? 0) #false)
+(check-expect (coordinate? #true) #false)
