@@ -36,9 +36,7 @@
 ; Any -> Boolean
 ; is x between 0 (inclusive) and 1 (exclusive)
 (define (between-0-and-1? n)
-  (and (number? n)
-       (or (= 0 n)
-           (< 0 n 1))))
+  (and (number? n) (<= 0 n) (< n 1)))
 
 (check-expect (between-0-and-1? "a") #false)
 (check-expect (between-0-and-1? 1.2) #false)
