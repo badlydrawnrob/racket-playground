@@ -23,6 +23,7 @@
 ;; #2: now, you can just increase/decrease the number!
 ;;     - you could also use `add1` function
 ;; #3: you could always check (zero? editor-num ed) here
+;; #4: Check for errors globally
 (require 2htdp/image)
 (require 2htdp/universe)
 
@@ -183,7 +184,37 @@
 
 
 
+;;; Exercise 114 — Checking for errors
+;;; ----------------------------------
+
+; Any Any -> Boolean
+(define (string-and-num? a b)
+  (and (string? a)
+       (number? b)))
+
+; Any -> Boolean
+(define (check-editor? ed)
+  (and (editor? ed)
+       (string-and-num? (editor-str ed)
+                        (editor-num ed))))
+
+(define ED1 (make-editor "this" "that"))
+(define ED2 (make-editor "this" 1))
+(define ED3 (make-editor 1 "this"))
+(define ED4 (make-editor #false 1))
+
+(check-expect (check-editor? ED1) #false)
+(check-expect (check-editor? ED2) #true)
+(check-expect (check-editor? ED3) #false)
+(check-expect (check-editor? ED4) #false)
+
+
+
+;;; Run the program
+;;; ---------------
+
 (define (run ed)
   (big-bang ed
+    [check-with check-editor?]  ; #4
     [to-draw render]
     [on-key edit]))
