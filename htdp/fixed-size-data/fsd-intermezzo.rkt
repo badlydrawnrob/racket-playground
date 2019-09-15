@@ -4,6 +4,12 @@
 ;;;; Intermezzo 1: Beginning Student Language
 ;;;; ========================================
 ;;;;
+;;;; #!: Use the stepper when you don't understand!
+;;;; #!: Use the stepper to double check result!
+;;;; #!: Use the stepper to double check new grammar!
+;;;; #!: Use the stepper to debug errors!
+;;;;
+;;;;
 ;;;; (function argument ... argument)
 ;;;;
 ;;;; (define (function-name param ... param) — or attributes?
@@ -42,6 +48,7 @@
 ; 1. bullshit
 ; 2. expression works, bullshit value (wrong value in expression)
 ; 3. expression works
+
 
 ;; 121
 
@@ -94,3 +101,41 @@
 ; (string=? "a" "a")
 ; ==
 ; #true
+
+
+;; Exercise 122
+
+(define (f x y)
+  (+ (* 3 x) (* y y)))
+
+; 1.
+
+(+ (f 1 2) (f 2 1))
+
+; ==
+; (+ (+ (* 3 1) (* 2 2))
+;    (f 2 1))
+; ==
+; (+ (+ 3 4)
+;    (f 2 1))
+; ==
+; (+ 7
+;    (f 2 1))
+; ==
+; (+ 7
+;    (+ (* 3 2) (* 1 1)))
+; ==
+; (+ 7
+;    (+ 6 1))
+; ==
+; (+ 7 7)
+; ==
+; 14
+
+; 2. Can't be arsed
+
+(f 1 (* 2 3))  ; 39
+
+; 3. Can't be arsed
+
+(f (f 1 (* 2 3)) 19) ; (f 39 19) -> (+ 117 361) -> 478
