@@ -54,18 +54,17 @@
     [else #false]))
 
 ;; Create an error string
-(define ERROR "string=? expects a TrafficLight")
+(define MESSAGE "string=? expects a TrafficLight")
 
 ; TrafficLight TrafficLight -> Boolean
 ; are the two values elements of TrafficLight and,
 ; if so, are they equal
 (define (light-checked=? l1 l2)
-  (cond
-    [(and (light? l1)
-          (light? l2)) (string=? l1 l2)]
-    [else ERROR]))
+  (if (and (light? l1) (light? l2))
+      (string=? l1 l2)
+      (error MESSAGE)))
 
 (check-expect (light-checked=? "red" "red") #true)
-(check-expect (light-checked=? 10 #false) "string=? expects a TrafficLight")
-(check-expect (light-checked=? "orange" "purple") "string=? expects a TrafficLight")
+(check-expect (light-checked=? 10 #false) (error MESSAGE))
+(check-expect (light-checked=? "orange" "purple") (error MESSAGE))
 (check-expect (light-checked=? "yellow" "green") #false)
