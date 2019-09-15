@@ -6,11 +6,23 @@
 ;;;; A function that compares two elements of
 ;;;; same collection of data ...
 ;;;;
+;;;; #! Use (key=? ...) and (mouse=? ...) from now on!
+;;;;
+;;;;    - Your own equality predicates may not be used much,
+;;;;      but these are very useful
+;;;;
 ;;;; #! What if a equality predicate is given the wrong
 ;;;;    type of string?
 ;;;;
-;;;;    - use an equality predicate with an ERROR message
-;;;;    - AND check it with a predicate with conditions
+;;;;    1. check against a predicate with conditions
+;;;;    2. equality predicate with an ERROR message (if not Type)
+;;;;
+;;;;
+;;;; #! Use (check-error ...) when checking for errors
+;;;;
+;;;;
+;;;; #1: To check both answers you use nested IF conditions
+;;;;     @link: https://bit.ly/2mgTGcj
 
 (require 2htdp/universe)
 (require 2htdp/image)
@@ -65,6 +77,26 @@
       (error MESSAGE)))
 
 (check-expect (light-checked=? "red" "red") #true)
-(check-expect (light-checked=? 10 #false) (error MESSAGE))
-(check-expect (light-checked=? "orange" "purple") (error MESSAGE))
+(check-error (light-checked=? 10 #false) MESSAGE)         ; #!
+(check-error (light-checked=? "orange" "purple") MESSAGE) ; #!
 (check-expect (light-checked=? "yellow" "green") #false)
+
+
+
+;;; Exercise 115
+;;; ============
+
+(define MESSAGE1 "TrafficLight expected for parameter 1")
+(define MESSAGE2 "TrafficLight expected for parameter 2")
+
+(check-error (light-checked-both=? "blue" "red") MESSAGE1)
+(check-error (light-checked-both=? "red" "blue") MESSAGE2)
+(check-expect (light-checked-both=? "red" "red") #true)
+
+; #1
+(define (light-checked-both=? l1 l2)
+  (if (light? l1)
+      (if (light? l2)
+          (string=? l1 l2)
+          (error MESSAGE2))
+      (error MESSAGE1)))
