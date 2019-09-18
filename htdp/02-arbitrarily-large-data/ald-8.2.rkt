@@ -41,12 +41,24 @@
 ; A ConsPair is a structure:
 ;   (make-pair Any Any)
 
+(define OUR1 "first")
+(define OUR2 "rest")
+(define OUR3 (make-pair OUR2 '()))
+
+
+;; The wrong way to do it:
+;; -----------------------
+
 ; Any Any -> consPair
 ; (define (our-cons a-value a-list)
 ;  (make-pair a-value a-list))
 
-(our-cons 1 '())
-(our-cons 1 (our-cons 2 '()))
+; (our-cons 1 '())
+; (our-cons 1 (our-cons 2 '()))
+
+
+;; The right way to do it:
+;; -----------------------
 
 ; A ConsOrEmpty is one of:
 ; - '()
@@ -60,7 +72,9 @@
     [(pair? a-list) (make-pair a-value a-list)]
     [else (error "cons: second argument ...")]))
 
-
+(check-error (our-cons OUR1 #false) "cons: second argument ...")
+(check-expect (our-cons OUR1 '()) (make-pair OUR1 '()))
+(check-expect (our-cons OUR1 OUR3) (make-pair OUR1 OUR3))
 
 ;;; Make our own cad and cdr
 ;;; ------------------------
@@ -76,5 +90,25 @@
 ; extracts the right part of the given pair
 (define (our-rest a-list)
   (if (empty? a-list)
-      (pair-right a-list)
-      (error 'our-rest "...")))
+      (error 'our-rest "...")
+      (pair-right a-list)))
+
+
+; With the real cons these would work, but our function
+; does not
+
+(check-expect (our-first (our-cons OUR1 '())) OUR1)  ; pull left-side
+(check-expect (our-rest (our-cons OUR1 '())) '())    ; empty
+(check-expect (our-rest (our-cons OUR1 OUR3)) OUR3)  ; pull right-side
+
+
+
+
+
+;; List primitives:
+; '()     - a special value, mostly to represent the empty list
+; empty?  - a predicate to recognize '() and nothing else
+; cons    - a checked constructor to create two-field instances
+; first   - the selector to extract the last item added
+; rest    - the selector to extract the extended list
+; cons?   - a predicate to recognizes instances of cons
