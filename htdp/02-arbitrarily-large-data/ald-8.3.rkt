@@ -27,9 +27,11 @@
 ; determines whether "Flatt" is on a-list-of-names
 (define (contains-flatt? alon)
   (cond
-    [(empty? alon) ...]
+    [(empty? alon) #false] ; if empty, obviously #f
     [(cons? alon)
-     (... (first alon) ... (rest alon) ...)]))
+     (cond
+       [(flatt? (first alon)) #true]
+       [else (contains-flatt? (rest alon))])])) ; recursive function
 
 (check-expect (contains-flatt? '()) #false)
 (check-expect (contains-flatt? (cons "Find" '())) #false)
@@ -40,6 +42,12 @@
 (check-expect (contains-flatt?
                (cons "A" (cons "Flat" (cons "Nope" '()))))
               #false)
+
+
+; String -> Boolean
+; checks if the string matches our name
+(define (flatt? s)
+  (string=? s "Flatt"))
 
 ; template --
 ; (define (contains-flatt? a-list-of-names)
