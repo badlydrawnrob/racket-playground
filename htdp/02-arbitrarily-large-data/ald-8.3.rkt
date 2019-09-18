@@ -10,6 +10,28 @@
 ;;;;
 ;;;; #: Here we're starting to use recursive functions
 ;;;;    which works with the self-referential list definition
+;;;;
+;;;;
+;;;; #1: A slight mindfuck. Remember, you need a "break in the chain":
+;;;;
+;;;;     If the left side OR the right side of the list yield
+;;;;     #true for (flatt? ...) return #true. Else return #false.
+;;;;
+;;;;     The list keeps moving outside->in until it hits '()
+;;;;
+;;;;     - Check if empty
+;;;;     - If not empty, check if "Flatt" matches on left side
+;;;;     - If not, pass through the function again
+;;;;     - Keep checking if "Flatt" matches
+;;;;     - Once you've checked the entire list, you're left with an empty list
+;;;;     - which is empty, thus #false
+;;;;
+;;;;
+;;;; #2: An alternative way to make the function work is to use
+;;;;     another nested (cond ...) statement
+;;;;
+;;;;     - #1 seems a little
+;;;;       more readable and simpler to understand in the Stepper
 
 
 ;;; Sample problem
@@ -30,11 +52,10 @@
 ; determines whether "Flatt" is on a-list-of-names
 (define (contains-flatt? alon)
   (cond
-    [(empty? alon) #false] ; if empty, obviously #f
+    [(empty? alon) #false]
     [(cons? alon)
-     (cond
-       [(flatt? (first alon)) #true]
-       [else (contains-flatt? (rest alon))])])) ; recursive function
+     (or (flatt? (first alon))
+         (contains-flatt? (rest alon)))])) ; #! #1
 
 ; String -> Boolean
 ; checks if the string matches our name
@@ -58,3 +79,31 @@
 ; (define (contains-flatt? a-list-of-names)
 ;  #false)
 
+
+
+
+;;; Exercise 132
+;;; ============
+
+(define a-long-list
+  (cons "Fagan"
+        (cons "Findler"
+              (cons "Fisler"
+                    (cons "Flanagan"
+                          (cons "Flatt"
+                                (cons "Felleisen"
+                                      (cons "Friedman" '()))))))))
+
+(contains-flatt? a-long-list) ; #true
+
+
+
+;;; Exercise 133
+;;; ============
+
+
+; #2
+;
+; ... (cond
+;       [(string=? (first alon) "Flatt") #true]
+;       [else (contains-flatt? (rest alon))]) ...
