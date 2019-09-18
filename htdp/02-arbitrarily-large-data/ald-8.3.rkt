@@ -7,6 +7,9 @@
 ;;;; @link: #(counter._(figure._fig~3acons))
 ;;;;
 ;;;; #: Check again the general design recipe
+;;;;
+;;;; #: Here we're starting to use recursive functions
+;;;;    which works with the self-referential list definition
 
 
 ;;; Sample problem
@@ -33,6 +36,11 @@
        [(flatt? (first alon)) #true]
        [else (contains-flatt? (rest alon))])])) ; recursive function
 
+; String -> Boolean
+; checks if the string matches our name
+(define (flatt? s)
+  (string=? s "Flatt"))
+
 (check-expect (contains-flatt? '()) #false)
 (check-expect (contains-flatt? (cons "Find" '())) #false)
 (check-expect (contains-flatt? (cons "Flatt" '())) #true)
@@ -42,12 +50,9 @@
 (check-expect (contains-flatt?
                (cons "A" (cons "Flat" (cons "Nope" '()))))
               #false)
-
-
-; String -> Boolean
-; checks if the string matches our name
-(define (flatt? s)
-  (string=? s "Flatt"))
+(check-expect (contains-flatt?
+               (cons "A" (cons "Flat" (cons "Flatt" '()))))
+              #true)
 
 ; template --
 ; (define (contains-flatt? a-list-of-names)
