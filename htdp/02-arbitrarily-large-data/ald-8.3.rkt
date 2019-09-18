@@ -28,7 +28,8 @@
 (define (contains-flatt? alon)
   (cond
     [(empty? alon) ...]
-    [(cons? alon) ...]))
+    [(cons? alon)
+     (... (first alon) ... (rest alon) ...)]))
 
 (check-expect (contains-flatt? '()) #false)
 (check-expect (contains-flatt? (cons "Find" '())) #false)
