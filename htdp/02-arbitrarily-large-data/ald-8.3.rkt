@@ -11,6 +11,10 @@
 ;;;; #: Here we're starting to use recursive functions
 ;;;;    which works with the self-referential list definition
 ;;;;
+;;;; #: We've recreated (member? ...) which checks a string for us
+;;;;
+;;;;    (member? "Flatt" ALOS)
+;;;;
 ;;;;
 ;;;; #1: A slight mindfuck. Remember, you need a "break in the chain":
 ;;;;
@@ -98,6 +102,7 @@
 
 
 
+
 ;;; Exercise 133
 ;;; ============
 
@@ -107,3 +112,39 @@
 ; ... (cond
 ;       [(string=? (first alon) "Flatt") #true]
 ;       [else (contains-flatt? (rest alon))]) ...
+
+
+
+
+;;; Exercise 134
+;;; ============
+;;; Develop the contains? function
+;;; takes a string and checks if occurs on a given list of strings
+
+
+; A List of Strings is one of:
+; - '()
+; - (cons Name ALOS)
+
+(define ALOS1 (cons "Hannah"
+                    (cons "Bob" '())))
+(define ALOS2 (cons "Albert"
+                    (cons "Rupert"
+                          (cons "Hannah" '()))))
+(define ALOS3 (cons "Louise"
+                    (cons "Rebecca"
+                          (cons "Albert"
+                                (cons "Rupert" '())))))
+
+; ALOS -> Boolean
+; Checks a Name against a list of Names
+(define (contains? l s)
+  (cond
+    [(empty? l) #false]
+    [(cons? l)
+     (or (string=? (first l) s)
+         (contains? (rest l) s))]))  ; #!
+
+(check-expect (contains? ALOS1 "Hannah") #true)
+(check-expect (contains? ALOS2 "Louise") #false)
+(check-expect (contains? ALOS3 "Rupert") #true)
