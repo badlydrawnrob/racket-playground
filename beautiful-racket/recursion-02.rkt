@@ -26,11 +26,13 @@
 ;;;;     but I'm not sure how yet!
 ;;;;
 ;;;; #2: (string->list ...) creates a list of chars (e.g: #\s)
-;;;;     (list "s" "t") is two 1Char strings (less explicit)
 ;;;;
 ;;;;     - Meaning, you have to convert (#2a) back into a string
 ;;;;     - You could probably also use (string-join ...) here too
 ;;;;     - Remember to read functions inside->out
+;;;;
+;;;;     (list "s" "t") is two 1Char strings (less explicit)
+;;;;     - so entering this will fail
 
 
 ;;; Adding hyphens to a string
@@ -62,7 +64,7 @@
     [else ...])) ; #1
 
 
-; A List of Strings -> String
+; A List of Chars -> String
 ; for this method you have to have the initial empty? and cons?
 ; conditions, with an extra if condition for the last (single) char.
 (define (alos->hyphens ls)
@@ -77,7 +79,9 @@
 (define EMPTY (string->list ""))        ; #2
 (define S (string->list "s"))           ; #2
 (define STRING (string->list "string")) ; #2
+(define ERROR (list "s" "t" "r" "i"))   ; #2
 
 (check-expect (alos->hyphens EMPTY) "")
 (check-expect (alos->hyphens S) "s")
 (check-expect (alos->hyphens STRING) "s-t-r-i-n-g")
+(check-error (alos->hyphens ERROR))
