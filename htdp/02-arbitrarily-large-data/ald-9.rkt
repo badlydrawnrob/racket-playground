@@ -29,6 +29,8 @@
 ;;;;
 ;;;;     - The data definition references itself ONCE
 ;;;;     - so the recursive function should be referenced ONCE
+;;;;
+;;;; #3: You could probably use add1 as a function here
 
 
 
@@ -88,11 +90,13 @@
 (define LIST2 (cons "a" (cons "b" '())))
 (define LIST3 (cons "a" (cons "b" (cons "c" '()))))
 
+; A list of strings -> Number
+; For every string in a list, add one
 (define (how-many alos)
   (cond
     [(empty? alos) 0]
     [else
-     (+ 1 (how-many (rest alos)))]))
+     (+ (how-many (rest alos)) 1)])) ; #3
 
 (check-expect (how-many LIST0) 0)
 (check-expect (how-many LIST1) 1)
