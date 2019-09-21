@@ -4,9 +4,12 @@
 ;;;; Designing with Self-Referential Data Definitions
 ;;;; ================================================
 ;;;; See the design recipe, it's a little more involved
+;;;; but to me it's worded in a confusing way ...
 ;;;; @link: https://bit.ly/2m6meVE
 ;;;;
-;;;; It's a little similar to mixed data definition
+;;;; It's a little similar to mixed data definition, but all
+;;;; pieces of the data definition must have a place in the template
+;;;; (including the self-referential part)
 ;;;;
 ;;;; '()
 ;;;; empty?
@@ -14,6 +17,18 @@
 ;;;; first
 ;;;; rest
 ;;;; cons?
+;;;;
+;;;;
+;;;; #1: This is one of your "base cases" to stop an infinite loop
+;;;;
+;;;;     - The book doesn't use (cons? ...) as the second selector
+;;;;
+;;;; #2: The self referential function maps to the same place as the
+;;;;     data definition (the right part of the second cond clause)
+;;;;     This is called a natural recursion.
+;;;;
+;;;;     - The data definition references itself ONCE
+;;;;     - so the recursive function should be referenced ONCE
 
 
 
@@ -32,7 +47,7 @@
 
 ; List-of-strings -> Number
 ; counts how many strings alos contains
-(define (how-many alos)
+(define (how-many-temp-01 alos)
   0)
 
 
@@ -56,8 +71,30 @@
 ;;; - self-references?
 ;;; - anything else? string?
 
-(define (how-many-cond alos)
+(define (how-many-temp-02 alos)
   (cond
-    [(empty? alos) ...]    ; needed
+    [(empty? alos) ...]    ; #1
+    [else                  ; #1
+     (... (first alos) ...
+      ... (how-many-cond (rest alos)) ...)])) ; #2
+
+
+;;; 5. Start building the function body
+;;; -----------------------------------
+;;; Using step 3 as a guide
+
+(define LIST0 '())
+(define LIST1 (cons "a" '()))
+(define LIST2 (cons "a" (cons "b" '())))
+(define LIST3 (cons "a" (cons "b" (cons "c" '()))))
+
+(define (how-many alos)
+  (cond
+    [(empty? alos) 0]
     [else
-     (... (first alos) ... (rest alos) ...)])) ; optional
+     (+ 1 (how-many (rest alos)))]))
+
+(check-expect (how-many LIST0) 0)
+(check-expect (how-many LIST1) 1)
+(check-expect (how-many LIST2) 2)
+(check-expect (how-many LIST3) 3)
