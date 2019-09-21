@@ -1,8 +1,8 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname ald-9) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
-;;;; Designing with Self-Referential Data Definitions
-;;;; ================================================
+;;;; 9. Designing with Self-Referential Data Definitions
+;;;; ===================================================
 ;;;; See the design recipe, it's a little more involved
 ;;;; but to me it's worded in a confusing way ...
 ;;;; @link: https://bit.ly/2m6meVE
@@ -10,6 +10,9 @@
 ;;;; It's a little similar to mixed data definition, but all
 ;;;; pieces of the data definition must have a place in the template
 ;;;; (including the self-referential part)
+;;;;
+;;;; You have these list parts available, but you DON't have to
+;;;; use all of them in every program!
 ;;;;
 ;;;; '()
 ;;;; empty?
@@ -30,7 +33,13 @@
 ;;;;     - The data definition references itself ONCE
 ;;;;     - so the recursive function should be referenced ONCE
 ;;;;
-;;;; #3: You could probably use add1 as a function here
+;;;; #3: You could probably use add1 as a function here, and you don't
+;;;;     need to use (rest ...) as it's not doing anything (a simple counter)
+;;;;
+;;;;     - You can use the table (expected results)
+;;;;     - Plus the available conditions, selectors, etc
+;;;;     - And the problem statement helps you choose the functions ...
+;;;;     - ... or helpers to compute the desired result.
 
 
 
@@ -85,6 +94,12 @@
 ;;; -----------------------------------
 ;;; Using step 3 as a guide
 
+
+;;; 6. Turn the examples from the table into tests
+;;; ----------------------------------------------
+;;; Using step 3 as a guide
+
+
 (define LIST0 '())
 (define LIST1 (cons "a" '()))
 (define LIST2 (cons "a" (cons "b" '())))
@@ -102,3 +117,16 @@
 (check-expect (how-many LIST1) 1)
 (check-expect (how-many LIST2) 2)
 (check-expect (how-many LIST3) 3)
+
+
+
+;;; If you need to, you can lay out an explicit table ...
+;;; -----------------------------------------------------
+;;; For instance, you could have examples and expected results
+;;; to get a better idea of how to tie the function together
+
+; alos	 (first alos)   (rest alos)   (how-many (rest alos))  (how-many alos)
+; LIST1  "a"            '()           0                        1
+; LIST2  "a"            (cons "b"     1                        2
+;                             '())                           
+; ...    ...            ...           ...                      ...
