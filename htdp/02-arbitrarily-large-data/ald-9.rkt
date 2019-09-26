@@ -24,7 +24,8 @@
 ;;;;
 ;;;; #1: This is one of your "base cases" to stop an infinite loop
 ;;;;
-;;;;     - The book doesn't use (cons? ...) as the second selector
+;;;;     - The book uses [else ...] instead of (cons? ...)
+;;;;       as the second selector
 ;;;;
 ;;;; #2: The self referential function maps to the same place as the
 ;;;;     data definition (the right part of the second cond clause)
