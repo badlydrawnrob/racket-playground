@@ -12,6 +12,9 @@
 ;;;;     sub-classes of allowed data types
 ;;;;
 ;;;;     - You'd use (and ...) here as ALL need to be #true
+;;;;
+;;;; #3: This works, but everytime the function runs it get's
+;;;;     passed through the (pos? ...) function, inefficient
 
 
 ;;; Exercise 137
@@ -135,3 +138,16 @@
 ; ALON -> Number
 ; Consumes a list of numbers and gives the sum
 ; (if one of List-of-Amounts) otherwise returns an error
+(define (checked-sum l)
+  (cond
+    [(empty? l) 0]
+    [(and (pos? l)
+          (cons? l)) (+ (first l)
+                        (checked-sum (rest l)))]
+    [else (error "invalid list, positive numbers only")])) ; #3 #!
+
+(check-error (checked-sum ALON4))
+(check-expect (checked-sum ALON0) 0)
+(check-expect (checked-sum ALON1) 1)
+(check-expect (checked-sum ALON2) 3)
+(check-expect (checked-sum ALON3) 6)
