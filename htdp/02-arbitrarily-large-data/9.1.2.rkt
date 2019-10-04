@@ -10,6 +10,11 @@
 ;;;;       (or ...) will ALWAYS return #true.
 ;;;;     - For (and ...) function, it's the reverse.
 ;;;;
+;;;; ##: Remember, you can think of the way a recursive function
+;;;;     works in many ways:
+;;;;
+;;;;     - A tabular list (with progressive results)
+;;;;     - Empty list -> full list (with each expected result)
 
 
 ;;; Exercise 140 (continued)
@@ -82,16 +87,34 @@
     [(empty? l) ""]
     [else (... (first l) ... (cat (rest l)) ...)]))
 
+
+;; #!
+
 ; Tabular list of examples
 ;
-; l            (first l) (rest l) (cat (rest l)) (cat l)
-; ------------------------------------------------------
-; (cons "a"    ???       ???      ???            "ab"
-;  (cons "b"
+; l            (first l) (rest l)      (cat (rest l)) (cat l)
+; ----------------------------------------------------------
+; (cons "a"    "a"       (cons         "b"            "ab"
+;  (cons "b"              "b" '())
 ;   '()))
 ;
-; (cons "ab"   ???       ???      ???            "abcdef"
-;  (cons "cd"
-;   (cons "ef"
+; (cons "ab"   "ab"       (cons "cd"   "cdef"         "abcdef"
+;  (cons "cd"              (cons "ef"
+;   (cons "ef"              '()))
 ;    '())))
 
+; Empty -> Full list examples
+;
+; (cons '())     -> '()
+;
+; (cons "ab"     -> "ab"
+;       '())
+;
+; (cons "ab"     -> "abcd"
+;  (cons "cd"
+;        '()))
+;
+; (cons "ab      -> "abcdef"
+;  (cons "cd"
+;   (cons "ef"
+;         '())))
