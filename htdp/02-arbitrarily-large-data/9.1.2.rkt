@@ -17,6 +17,7 @@
 ;;;;     - Empty list -> full list (with each expected result)
 ;;;;
 ;;;; ##: Remember, it's easier to sketch out the whole function first!!!
+;;;;     ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
 
 (require 2htdp/image)
 
@@ -145,28 +146,29 @@
 ; -'()
 ; - (cons ImageOrFalse List-of-Images)
 
-(define IMG1 (bitmap "io/sizes/20x20.png")) ; #f
-(define IMG2 (bitmap "io/sizes/30x30.png")) ; #f
-(define IMG3 (bitmap "io/sizes/40x40.png")) ; #f
-(define IMG4 (bitmap "io/sizes/30x40.png")) ; Image
-(define IMG5 (bitmap "io/sizes/50x50.png")) ; #f
-(define IMG6 (bitmap "io/sizes/40x50.png")) ; Image
+(define IMG1 (bitmap "io/sizes/20x20.png"))
+(define IMG2 (bitmap "io/sizes/30x30.png"))
+(define IMG3 (bitmap "io/sizes/40x40.png"))
+(define IMG4 (bitmap "io/sizes/30x40.png"))
+(define IMG5 (bitmap "io/sizes/50x50.png"))
+(define IMG6 (bitmap "io/sizes/40x50.png"))
 
 (define LOI1 '()) ; #f
-(define LOI2 (cons IMG1 LOI1)) ; #f
-(define LOI3 (cons IMG2 LOI2)) ; #f
-(define LOI4 (cons IMG3 LOI3)) ; #f
-(define LOI5 (cons IMG4 LOI4)) ; Image
-(define LOI6 (cons IMG5 LOI4)) ; #f
-(define LOI7 (cons IMG6 LOI5)) ; Image
+(define LOI2 (cons IMG1 LOI1))
+(define LOI3 (cons IMG2 LOI2))
+(define LOI4 (cons IMG3 LOI3))
+(define LOI5 (cons IMG4 LOI4))
+(define LOI6 (cons IMG5 LOI4))
+(define LOI7 (cons IMG6 LOI5))
 
 ; LOI -> ImageOrFalse
 ; Takes a list, returns the image if not n by n; or false
 (define (ill-sized? loi n)
   (cond
-    [(empty? loi) ...]
-    [else (... (first loi)
-               (ill-sized? (rest loi)) ...)]))
+    [(empty? loi) #false]
+    [else (if (image-square? (first loi) n)
+              (first loi)
+              (ill-sized? (rest loi) n))]))
 
 (check-expect (ill-sized? LOI1 20) #f)
 (check-expect (ill-sized? LOI2 20) #f)
