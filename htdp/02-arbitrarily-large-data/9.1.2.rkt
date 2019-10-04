@@ -85,7 +85,8 @@
 (define (cat l)
   (cond
     [(empty? l) ""]
-    [else (... (first l) ... (cat (rest l)) ...)]))
+    [else (string-append (first l)
+                         (cat (rest l)))]))
 
 
 ;; #!
