@@ -15,6 +15,11 @@
 ;;;;
 ;;;;     - A tabular list (with progressive results)
 ;;;;     - Empty list -> full list (with each expected result)
+;;;;
+;;;; ##: Remember, it's easier to sketch out the whole function first!!!
+
+(require 2htdp/image)
+
 
 
 ;;; Exercise 140 (continued)
@@ -119,3 +124,95 @@
 ;  (cons "cd"
 ;   (cons "ef"
 ;         '())))
+
+
+
+
+;;; Exercise 142
+;;; ------------
+;;; Design the ill-sized? function, which consumes a
+;;; list of images loi and a positive number n.
+;;;
+;;; - produce first image on loi that
+;;; - is not n by n square
+;;; - else #false
+
+; ImageOrFalse is one of:
+; - Image
+; - #false
+
+; List-of-images is one of:
+; -'()
+; - (cons ImageOrFalse List-of-Images)
+
+(define IMG1 (bitmap "io/sizes/20x20.png")) ; #f
+(define IMG2 (bitmap "io/sizes/30x30.png")) ; #f
+(define IMG3 (bitmap "io/sizes/40x40.png")) ; #f
+(define IMG4 (bitmap "io/sizes/30x40.png")) ; Image
+(define IMG5 (bitmap "io/sizes/50x50.png")) ; #f
+(define IMG6 (bitmap "io/sizes/40x50.png")) ; Image
+
+(define LOI1 '()) ; #f
+(define LOI2 (cons IMG1 LOI1)) ; #f
+(define LOI3 (cons IMG2 LOI2)) ; #f
+(define LOI4 (cons IMG3 LOI3)) ; #f
+(define LOI5 (cons IMG4 LOI4)) ; Image
+(define LOI6 (cons IMG5 LOI4)) ; #f
+(define LOI7 (cons IMG6 LOI5)) ; Image
+
+; LOI -> ImageOrFalse
+; Takes a list, returns the image if not n by n; or false
+(define (ill-sized? loi n)
+  (cond
+    [(empty? loi) ...]
+    [else (... (first loi)
+               (ill-sized? (rest loi)) ...)]))
+
+(check-expect (ill-sized? LOI1 20) #f)
+(check-expect (ill-sized? LOI2 20) #f)
+(check-expect (ill-sized? LOI3 30) IMG1)
+(check-expect (ill-sized? LOI4 40) IMG2)
+(check-expect (ill-sized? LOI5 40) IMG4)
+(check-expect (ill-sized? LOI6 50) IMG4)
+(check-expect (ill-sized? LOI7 50) IMG6)
+
+; Image Number -> Boolean
+; Takes an image and a number, checks if n by n square
+(define (image-square? img n)
+  (and (equal? n (image-width img))
+       (equal? n (image-height img))))
+
+(check-expect (image-square? IMG1 20) #t) ; 20x20
+(check-expect (image-square? IMG2 30) #t) ; 30x30
+(check-expect (image-square? IMG3 30) #f) ; 40x40
+(check-expect (image-square? IMG3 30) #f) ; 30x40
+
+
+; LOI -> Boolean
+; Checks if all list items are images
+(define (is-loi? loi)
+  (cond
+    [(empty? loi) #true]
+    [else (and (image? (first loi))
+               (is-loi? (rest loi)))]))
+
+(check-expect (is-loi? LOI1) #t)
+(check-expect (is-loi? LOI2) #t)
+(check-expect (is-loi? LOI3) #t)
+(check-expect (is-loi? LOI4) #t)
+(check-expect (is-loi? LOI5) #t)
+(check-expect (is-loi? LOI6) #t)
+(check-expect (is-loi? (cons (bitmap "io/sizes/20x20.png")
+                             (cons "a" '()))) #f)
+
+; LOI PositiveNumber -> ImageOrFalse
+; A Type-tested check, passes to main function or dies
+;(define (test-loi loi n)
+;  (cond
+;    [(is-loi? loi) (ill-sized? loi n)]
+;    [else (error "Go and do your homework buddy!")]))
+
+;(check-expect (test-loi LOI1) #t)
+;(check-expect (test-loi LOI6) #t)
+;(check-error (test-loi (cons (bitmap "io/sizes/20x20.png")
+;                             (cons "a" '()))))
