@@ -13,6 +13,7 @@
 
 
 ;;; Exercise 140 (continued)
+;;; ------------------------
 
 ; A List of bools is one of:
 ; - '()
@@ -59,3 +60,38 @@
 ; (cons #f (cons #t '()))                      -> #t    
 ; (cons #t (cons #t (cons #t '())))            -> #t
 ; (cons #f (cons #f (cons #f (cons #f '()))))  -> #f
+
+
+
+
+;;; Exercise 141
+;;; ------------
+;;; Part of this definition is done for you ...
+
+; List-of-string -> String
+; concatenates all strings in l into one long string
+
+(check-expect (cat '()) "")
+(check-expect (cat (cons "a" (cons "b" '()))) "ab")
+(check-expect (cat (cons "ab"
+                         (cons "cd"
+                               (cons "ef" '())))) "abcdef")
+
+(define (cat l)
+  (cond
+    [(empty? l) ""]
+    [else (... (first l) ... (cat (rest l)) ...)]))
+
+; Tabular list of examples
+;
+; l            (first l) (rest l) (cat (rest l)) (cat l)
+; ------------------------------------------------------
+; (cons "a"    ???       ???      ???            "ab"
+;  (cons "b"
+;   '()))
+;
+; (cons "ab"   ???       ???      ???            "abcdef"
+;  (cons "cd"
+;   (cons "ef"
+;    '())))
+
