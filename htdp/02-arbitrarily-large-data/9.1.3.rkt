@@ -52,15 +52,15 @@
 (define LOI3 (cons IMG2 LOI2))
 (define LOI4 (cons IMG3 LOI3))
 (define LOI5 (cons IMG4 LOI4))
-(define LOI6 (cons IMG5 LOI4))
-(define LOI7 (cons IMG6 LOI5))
+(define LOI6 (cons IMG5 LOI5))
+(define LOI7 (cons IMG6 LOI6))
 
 ; LOI -> ImageOrFalse
 ; Takes a list, returns the image if not n by n; or false
 (define (ill-sized? loi n)
   (cond
     [(empty? loi) #false]
-    [else (if (image-square? (first loi) n)
+    [else (if (not (image-square? (first loi) n))
               (first loi)
               (ill-sized? (rest loi) n))]))
 
