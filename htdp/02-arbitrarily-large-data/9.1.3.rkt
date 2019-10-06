@@ -69,7 +69,7 @@
 (define (ill-sized? loi n)
   (cond
     [(empty? loi) #false]
-    [else (if (not (image-square? (first loi) n))
+    [else (if (not (image-square? (first loi) n))  ; #!
               (first loi)
               (ill-sized? (rest loi) n))]))
 
