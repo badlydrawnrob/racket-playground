@@ -243,7 +243,7 @@
 -1 -1 2 1 #"\0"
 0 -1 1 #"\0"
 1.0 0 -1 -1 -1 -1 -1 -1 1 0 0 0 0 0 0 0 0 1.0 1.0 1.0 65 105 225 0 0 0
--1 -1           0 725 0 4 3 85
+-1 -1           0 737 0 4 3 85
 (
  #";; The first three lines of this file were inserted by DrRacket. The"
  #"y record metadata"
@@ -1008,4 +1008,17 @@
 0 0 24 29 1 #"\n"
 0 0 24 29 1 #"\n"
 0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";;; Exercise 144"
+0 0 24 29 1 #"\n"
+0 0 17 3 16 #";;; ------------"
+0 0 24 29 1 #"\n"
+0 0 17 3 54 #";;; The sum and how-many functions will work as normal"
+0 0 24 29 1 #"\n"
+0 0 17 3 56 #";;; with a non-empty list, as it works much the same ..."
+0 0 24 29 1 #"\n"
+0 0 17 3 61
+#";;; however, we don't need the (empty? ...) condition as it's"
+0 0 24 29 1 #"\n"
+0 0 17 3 40 #";;; irrelevant in a Non-empty-list type."
 0           0
