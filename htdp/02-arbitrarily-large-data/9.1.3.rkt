@@ -55,7 +55,7 @@
 (define LOI6 (cons IMG5 LOI5))
 (define LOI7 (cons IMG6 LOI6))
 
-; LOI -> ImageOrFalse
+; LOI Number -> ImageOrFalse
 ; Takes a list, returns the image if not n by n; or false
 (define (ill-sized? loi n)
   (cond
@@ -103,12 +103,12 @@
 
 ; LOI PositiveNumber -> ImageOrFalse
 ; A Type-tested check, passes to main function or dies
-;(define (test-loi loi n)
-;  (cond
-;    [(is-loi? loi) (ill-sized? loi n)]
-;    [else (error "Go and do your homework buddy!")]))
+(define (test-loi loi n)
+  (cond
+    [(is-loi? loi) (ill-sized? loi n)]
+    [else (error "Go and do your homework buddy!")]))
 
-;(check-expect (test-loi LOI1) #t)
-;(check-expect (test-loi LOI6) #t)
-;(check-error (test-loi (cons (bitmap "io/sizes/20x20.png")
-;                             (cons "a" '()))))
+(check-expect (test-loi LOI1 20) #f)
+(check-expect (test-loi LOI6 50) IMG4)
+(check-error (test-loi (cons (bitmap "io/sizes/20x20.png")
+                             (cons "a" '())) 50))
