@@ -4,11 +4,21 @@
 ;;;; 9.1 Finger Exercises: Lists
 ;;;; ===========================
 ;;;;
+;;;; ##: Remember, it's easier to sketch out the whole function first!!!
+;;;;     ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
+;;;;
+;;;;     Exercise 142 is a little tricky to wrap your head around,
+;;;;     the wording isn't 100% clear to begin.
+;;;;
+;;;;     You're returning the first image that is NOT n by n square!
+;;;;
+;;;;
 ;;;; ##: Careful of base cases for '() empty lists!
 ;;;;
 ;;;;     - '() should be #false here. If any value is #true,
 ;;;;       (or ...) will ALWAYS return #true.
 ;;;;     - For (and ...) function, it's the reverse.
+;;;;
 ;;;;
 ;;;; ##: Remember, you can think of the way a recursive function
 ;;;;     works in many ways:
@@ -16,8 +26,7 @@
 ;;;;     - A tabular list (with progressive results)
 ;;;;     - Empty list -> full list (with each expected result)
 ;;;;
-;;;; ##: Remember, it's easier to sketch out the whole function first!!!
-;;;;     ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
+
 
 (require 2htdp/image)
 
