@@ -264,7 +264,7 @@
 0 -1 4 1 #"\0"
 0 -1 1 #"\0"
 1.0 0 92 -1 -1 -1 -1 -1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 255 255 0 -1 -1
-          0 1572 0 4 3 85
+          0 1570 0 4 3 85
 (
  #";; The first three lines of this file were inserted by DrRacket. The"
  #"y record metadata"
@@ -1898,7 +1898,5 @@
 0 0 17 3 8 #"consider"
 0 0 17 3 1 #" "
 0 0 17 3 3 #"the"
-0 0 17 3 1 #" "
-0 0 17 3 8 #"function"
-0 0 17 3 5 #" too."
+0 0 17 3 14 #" function too."
 0           0
