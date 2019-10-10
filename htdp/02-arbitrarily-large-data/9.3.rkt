@@ -18,6 +18,11 @@
 ;;;;     the wrong type will throw a spanner in the works.
 ;;;;
 ;;;;
+;;;; ##: Things can go into Matrix territory with recursion!
+;;;;
+;;;;     - Is it best to avoid nested recursion?
+;;;;
+;;;;
 ;;;; #1: A given natural number can match NN data definition
 ;;;;     here zero is considered atomic data and positive numbers
 ;;;;     structured values.
@@ -40,6 +45,12 @@
 ;;;; #3: You can nest (add1 ...) function like this:
 ;;;;
 ;;;;     - (add1 (add1 (add1 0))) -> 3
+;;;;
+;;;;
+;;;; #4: (* 2 4) == (+ 4 4)
+;;;;
+;;;;     @link: https://www.aaamath.com/pro39_x2.htm
+;;;;     @link: https://blog.angularindepth.com/learn-recursion-in-10-minutes-e3262ac08a1
 
 
 (require 2htdp/image)
@@ -129,8 +140,72 @@
     [(positive? n) (add1 (add-to-pi (sub1 n)))])) ; #3
 
  
-; '()                            -> (+ 0 pi)  -> pi
-; (cons 1 '())                   -> (+ 1 pi)  -> (add1 pi)
-; (cons 2 (cons 1 '()))          -> (+ 2 pi)  -> ...
-; (cons 3 (cons 2 (cons 1 '()))) -> (+ 3 pi)
+; (+ 0 pi)  -> pi
+; (+ 1 pi)  -> (add1 pi)
+; (+ 2 pi)  -> (add1 (add1 pi))
+; (+ 3 pi)  -> ...
 
+
+;;; Now generalise the function for a natural number N
+;;; and an arbitrary number x, without using +
+
+; N Number -> Number
+; computes (+ n Number) without using +
+(define (add n num)
+  (cond
+    [(zero? n) num]
+    [(positive? n) (add1 (add (sub1 n) num))]))
+
+(check-expect (add 4 3.15) 7.15)
+(check-expect (add 1 2) 3)
+(check-expect (add 5 -3) 2)
+(check-within (add 3 1/3) 3.3 0.1)
+
+
+
+;;; Exercise 151
+;;; ------------
+
+; N Number -> Number
+; calculates (* n Number) without using *
+
+; (* 0 2) -> 0
+; (* 1 2) -> 2
+; (* 2 2) -> 4
+; (* 3 2) -> 6
+
+(define (multiply n num)
+  (cond
+    [(zero? n) num]
+    [(positive? n) (... (multiply (sub1 n) num) ...)])) ; #4 #!
+
+(check-expect (multiply 0 2) 0)
+(check-expect (multiply 1 0) 0)
+(check-expect (multiply 1 2) 2)
+(check-expect (multiply 2 2) 4)
+(check-expect (multiply 3 2) 6)
+
+
+
+;;; Exercise 152
+;;; ------------
+
+(define box (square 10 "outline" "black"))
+
+; N Image -> Image
+; create n columns of image
+(define (col n img)
+  (cond
+    [(zero? n) '()]
+    [(positive? n) (cons img (col (sub1 n) img))]))
+
+(check-expect (col 2 box) (cons box (cons box '())))
+
+; N Image -> Image
+; create n rows of image
+(define (row n img)
+  (cond
+    [(zero? n) '()]                                 ; 0
+    [(positive? n) (cons img (row (sub1 n) img))])) ; cons
+
+(check-expect (row 4 box) (cons box (cons box (cons box (cons box '())))))
