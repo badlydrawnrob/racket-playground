@@ -35,6 +35,11 @@
 ;;;;
 ;;;; #2: Right now, there are no type-checks on the input, so you can
 ;;;;     essentially create copies of Any data-type in a list.
+;;;;
+;;;;
+;;;; #3: You can nest (add1 ...) function like this:
+;;;;
+;;;;     - (add1 (add1 (add1 0))) -> 3
 
 
 (require 2htdp/image)
@@ -55,6 +60,12 @@
 ; - 0
 ; - (add1 Natural-Number)
 ; interpretation represents the counting numbers
+
+; add1 -- cons
+; sub1 -- first rest
+
+; zero?  - empty?
+; positive? - cons? - else
 
 
 ; N String -> List-of-strings
@@ -115,11 +126,11 @@
 (define (add-to-pi n)
   (cond
     [(zero? n) pi]
-    [(positive? n) (... (add-to-pi (sub1 n)) ...)]))
+    [(positive? n) (add1 (add-to-pi (sub1 n)))])) ; #3
 
  
-; '()                            -> (+ 0 pi)
-; (cons 1 '())                   -> (+ 1 pi)
-; (cons 2 (cons 1 '()))          -> (+ 2 pi)
+; '()                            -> (+ 0 pi)  -> pi
+; (cons 1 '())                   -> (+ 1 pi)  -> (add1 pi)
+; (cons 2 (cons 1 '()))          -> (+ 2 pi)  -> ...
 ; (cons 3 (cons 2 (cons 1 '()))) -> (+ 3 pi)
 
