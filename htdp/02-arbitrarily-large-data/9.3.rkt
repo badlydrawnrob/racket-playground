@@ -176,8 +176,8 @@
 
 (define (multiply n num)
   (cond
-    [(zero? n) num]
-    [(positive? n) (... (multiply (sub1 n) num) ...)])) ; #4 #!
+    [(zero? n) 0.0]
+    [(positive? n) (add (multiply (sub1 n) num) num)])) ; #4 #!
 
 (check-expect (multiply 0 2) 0)
 (check-expect (multiply 1 0) 0)
