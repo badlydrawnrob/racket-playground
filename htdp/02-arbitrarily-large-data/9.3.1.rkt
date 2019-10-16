@@ -196,16 +196,16 @@
 ; create n columns of image
 (define (col n img)
   (cond
-    [(zero? n) '()]
-    [(positive? n) (cons img (col (sub1 n) img))]))
+    [(zero? n) empty-image]                          ; 0
+    [(positive? n) (above img (col (sub1 n) img))])) ; above
 
-(check-expect (col 2 box) (cons box (cons box '())))
+(check-expect (col 2 box) (above box box empty-image))
 
 ; N Image -> Image
 ; create n rows of image
 (define (row n img)
   (cond
-    [(zero? n) '()]                                 ; 0
-    [(positive? n) (cons img (row (sub1 n) img))])) ; cons
+    [(zero? n) empty-image]                           ; 0
+    [(positive? n) (beside img (row (sub1 n) img))])) ; beside
 
-(check-expect (row 4 box) (cons box (cons box (cons box (cons box '())))))
+(check-expect (row 4 box) (beside box box box box empty-image))
