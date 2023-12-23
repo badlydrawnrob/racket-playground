@@ -13,5 +13,7 @@
 
 ## Other helpful links
 
+- [Why learn Racket?](https://www.micahcantor.com/blog/why-learn-racket/) A student's perspective
+- [Beautiful Racket](https://beautifulracket.com) book by Matthew Butterick
 - [Scheme — feel the cool](https://youtu.be/byofGyW2L10) (Andy Balaam)
 - [Server Racket](https://serverracket.com)
