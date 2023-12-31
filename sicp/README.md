@@ -1,8 +1,14 @@
 # SICP
 
-> **SICP is maths-heavy and I've no interest in improving my maths** (much) so expect maths questions to go unanswered, or refer to other people's answers. It's good to understand the general idea, if you can. Some [criticism and helpful guidelines](https://jakescruggs.blogspot.com/2014/02/sicp-wasnt-written-for-you.html) for dealing with the book.
+> **SICP is maths-heavy and I've no interest in improving my maths** (much) so expect maths questions to go unanswered, or refer to other people's answers. It's good to understand the general idea, if you can. Some [criticism](https://news.ycombinator.com/item?id=1485363) and [helpful guidelines](https://jakescruggs.blogspot.com/2014/02/sicp-wasnt-written-for-you.html) for dealing with the book.
 >
-> An easier text, with less maths is [How To Design Programs](https://htdp.org/).
+> An easier text, with less maths is [How To Design Programs](https://htdp.org/). ([a text](https://www2.ccs.neu.edu/racket/pubs/jfp2004-fffk.pdf) on the difference between the two)
+
+## How to read the book
+
+1. Set a timebox for each exercise
+2. If you don't get it, look it up and move on to the next problem
+3. Circle back to exercises you struggled with
 
 ## 📖 Helpful links for the book
 
