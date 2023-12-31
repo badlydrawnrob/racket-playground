@@ -1,5 +1,9 @@
 # SICP
 
+> **SICP is maths-heavy and I've no interest in improving my maths** (much) so expect maths questions to go unanswered, or refer to other people's answers. It's good to understand the general idea, if you can. Some [criticism and helpful guidelines](https://jakescruggs.blogspot.com/2014/02/sicp-wasnt-written-for-you.html) for dealing with the book.
+>
+> An easier text, with less maths is [How To Design Programs](https://htdp.org/).
+
 ## 📖 Helpful links for the book
 
 - [SICP Book](https://sarabander.github.io/sicp/html/index.xhtml)
@@ -11,6 +15,7 @@
 - [SICP Distilled](https://www.sicpdistilled.com)
 - [SICP Answers](http://community.schemewiki.org/?SICP-Solutions)
 - [SICP Solutions](https://sicp-solutions.net) (nicely formatted)
+- [SICP Solutions 2](http://community.schemewiki.org/?sicp-solutions) (with forum-like Q & A)
 - [A SICP Walkthrough](https://mngu2382.github.io/sicp/) (the first 2 chapters)
 - [SICP Collections](https://docs.racket-lang.org/sicp-manual/index.html) (SICP lang in DrRacket)
 
