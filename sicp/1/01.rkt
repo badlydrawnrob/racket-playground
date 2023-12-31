@@ -2,6 +2,9 @@
 
 ;; 1.1.6
 
+;; General form of a procedure definition
+;; “(define (⟨name⟩ ⟨formal parameters⟩) ⟨body⟩)”
+
 ;; Conditional expressions and predicates
 ;; Each condition runs until returns #t
 (define (abs x)
@@ -96,10 +99,35 @@
 ;;; 1.1.7
 
 ;; Square roots by Newton's method
-;; Pseudo lisp to showing a problem that describes what it is,
+;; Pseudo lisp to showing a problem that describes 'what it is',
 ;; but not how to compute it. It shows the property of a thing,
-;; not the "how to" of the thing.
+;; not the 'how to' of the thing.
 
 ; (define (sqrt x)
 ;   (the y (and (>= y 0)
 ;               (= (square y) x))))
+
+;; Whenever we have a guess for y for the value of the square
+;; root of a number x, we can perform a simple manipulation to
+;; get a better guess (one closer to the actual square root)
+;; - by averaging y with x/y
+
+; guess    quotient     average
+;
+; 1        (2/1) = 2    ((2 + 1) / 2)  =  1.5
+;
+; 1.5      (2/1.5)      ((1.3333 + 1.5) / 2)
+;            = 1.3333     = 1.4167
+;
+; 1.4167    ...         ...
+
+;; From our table, we can formalize the process with a procedure
+;; we use WISHFUL THINKING to make a start on our function ...
+;; - A little bit like HTDP function recipe, but we're writing
+;;   out the function as if the child functions already exist,
+;;   without worrying yet HOW to compute them. (see README)
+
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x) x)))

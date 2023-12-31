@@ -1,6 +1,6 @@
 # SICP
 
-## Helpful links for the book
+## 📖 Helpful links for the book
 
 - [SICP Book](https://sarabander.github.io/sicp/html/index.xhtml)
 - [SICP Original Lectures](https://www.youtube.com/playlist?list=PL8FE88AA54363BC46) (YouTube)
@@ -14,7 +14,8 @@
 - [A SICP Walkthrough](https://mngu2382.github.io/sicp/) (the first 2 chapters)
 - [SICP Collections](https://docs.racket-lang.org/sicp-manual/index.html) (SICP lang in DrRacket)
 
-##  Scheme styleguides
+
+## 🖋️ Scheme styleguides
 
 There's not very many good visual styleguides for lisp I can find.
 
@@ -24,3 +25,8 @@ There's not very many good visual styleguides for lisp I can find.
 - [The one true lisp styleguide](https://github.com/foxsae/The-One-True-Lisp-Style-Guide) (consensus for Common Lisp)
 - [Peter Norvig](https://www.cs.umd.edu/~nau/cmsc421/norvig-lisp-style.pdf)
 - [Raw text styleguide](http://mumble.net/~campbell/scheme/style.txt)
+
+
+## ✏️ Designing programs / functions
+
+- **[Wishful thinking](https://wiki.c2.com/?WishfulThinking)** and **[HTDP function recipes](https://htdp.org/2019-02-24/part_one.html#%28part._sec~3adesign-func%29)** (simpler description [here](https://thoughtbot.com/blog/debugging-with-htdp-design-recipe)) — design your function as if procedures already exist.
