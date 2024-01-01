@@ -10,6 +10,8 @@
 > — With Applicative-order, all the argument forms are evaluated **before** the function is invoked
 > 
 > Functions are evaluated and replaced with the function body and it's values, the values are then evaluated and returned. Inner functions seem to be evaluated first; then outer functions. **Take care with recursive functions**, as they can lead to infinite loops if a function is continually evaluated.
+>
+> `new-if` becomes a procedure, not a special-form, which means all sub-expressions are evaluated before `new-if` is applied to the values of the operands.
 
 - A [simple explanation](https://sicp-solutions.net/post/sicp-solution-exercise-1-6/) of exercise 1.6
 - ⚠️ An example of an infinite loop due to [Applicative-order](https://sicp-solutions.net/post/sicp-solution-exercise-1-5/)

@@ -41,3 +41,8 @@ There's not very many good visual styleguides for lisp I can find.
 ## ✏️ Designing programs / functions
 
 - **[Wishful thinking](https://wiki.c2.com/?WishfulThinking)** and **[HTDP function recipes](https://htdp.org/2019-02-24/part_one.html#%28part._sec~3adesign-func%29)** (simpler description [here](https://thoughtbot.com/blog/debugging-with-htdp-design-recipe)) — design your function as if procedures already exist.
+
+
+## 🤦‍♂️ Things I'm struggling to understand
+
+> Folders marked `_!!!_` are concepts I'm struggling with, to maybe attack later.
