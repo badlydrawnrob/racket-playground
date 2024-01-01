@@ -21,4 +21,4 @@
 
 ## 🤔 Things I need to understand better
 
-1. Applicative- -vs- normal-order with visual [examples](https://sookocheff.com/post/fp/evaluating-lambda-expressions/)
+1. Applicative- -vs- normal-order with visual [examples](https://sookocheff.com/post/fp/evaluating-lambda-expressions/) (See `./sicp/` chapter 1. It's [easy](https://cs.stackexchange.com/a/40765) to get confused)
