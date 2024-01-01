@@ -229,13 +229,13 @@
           guess
           (sqrt-iter-new-if (improve guess x) x)))
 
-;; ⚠️ Alyssa realises that running this function creates an infinite loop:
+;; Alyssa realises that running this function creates an infinite loop:
 ;; - http://community.schemewiki.org/?sicp-ex-1.6
 ;;
 ;; Only one of the two consequent expressions get evaluated when using `if`,
 ;; while both of the consequent expressions get evaluated with `new-if`.
 ;;
-;; (sqrt-iter-new-if 1 2) ; => ... => ...
+;; See file `excercise-1.1.6-infinite-loop.rkt`
 
 
 ;;; ⚠️ Exercise 1.7 =================================================================
