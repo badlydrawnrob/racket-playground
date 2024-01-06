@@ -18,7 +18,14 @@
 - [Scheme — feel the cool](https://youtu.be/byofGyW2L10) (Andy Balaam)
 - [Server Racket](https://serverracket.com)
 
+## Other Scheme books
+
+- The Little Schemer (also by Matthias)
+- [The Scheme Programming Language](https://www.scheme.com/tspl4/)
+- [The Structure and Interpretation of Computer Programs](https://sarabander.github.io/sicp/html/index.xhtml) (see the folder)
+
 
 ## 🤔 Things I need to understand better
 
 1. Applicative- -vs- normal-order with visual [examples](https://sookocheff.com/post/fp/evaluating-lambda-expressions/) (See `./sicp/` chapter 1. It's [easy](https://cs.stackexchange.com/a/40765) to get confused)
+2. [How to solve it](https://www.youtube.com/watch?v=rBa9R32IHxI) problem solving methods
