@@ -24,6 +24,12 @@
 - [The Scheme Programming Language](https://www.scheme.com/tspl4/)
 - [The Structure and Interpretation of Computer Programs](https://sarabander.github.io/sicp/html/index.xhtml) (see the folder)
 
+## What is Racket bad at?
+
+If Racket is good for teaching, what are it's downsides for "real" programming?
+
+- [Frustrations](https://blog.winny.tech/posts/racket-frustrates-me/) with Racket
+
 
 ## 🤔 Things I need to understand better
 
