@@ -14,3 +14,5 @@
                    (rest list))]))
 
 (fold-left cons '() '(1 2 3))
+(fold-left + 0 (list 1 2 3 4)) ; Easy to reason about
+(fold-left - 0 (list 1 2 3 4)) ; Surprisingly, returns 2: https://stackoverflow.com/a/53563356
