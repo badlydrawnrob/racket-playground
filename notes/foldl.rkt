@@ -16,3 +16,23 @@
 (fold-left cons '() '(1 2 3))
 (fold-left + 0 (list 1 2 3 4)) ; Easy to reason about
 (fold-left - 0 (list 1 2 3 4)) ; Surprisingly, returns 2: https://stackoverflow.com/a/53563356
+
+
+;; Stepping through '(1 2 3) ;;
+;; ========================= ;;
+
+;; Also see Elm versions:
+;;   http://tinyurl.com/elm-lang-foldl-stepper
+;;   http://tinyurl.com/elm-lang-foldl-debug-log
+
+; (fold-left cons '() '(1 2 3))          -> f a list
+;   (empty? '(1 2 3))                    -> #false
+;   (cons (first '(1 2 3)) '())          -> f = cons
+;   (fold-left '() '(1) (rest '(1 2 3))  -> '() '(1) '(2 3)
+;
+; (fold-left cons '(1) '(2 3))
+; (fold-left cons '(2 1) '(3))
+; (fold-left cons '(3 2 1) '())
+;   (empty? '())                         -> #true
+;
+; '(3 2 1)
