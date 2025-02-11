@@ -17,6 +17,7 @@
 - [Beautiful Racket](https://beautifulracket.com) book by Matthew Butterick
 - [Scheme — feel the cool](https://youtu.be/byofGyW2L10) (Andy Balaam)
 - [Server Racket](https://serverracket.com)
+- [Awesome Lisp languages](https://github.com/dundalek/awesome-lisp-languages)
 
 ## Other Scheme books
 
