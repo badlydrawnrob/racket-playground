@@ -21,7 +21,7 @@
 ; Let's make our image!
 
 (place-image
-  MOON 10 10
+  ROCKET MIDDLE MIDDLE
     (place-image
-      ROCKET MIDDLE MIDDLE
+      MOON 10 10
         BACKGROUND))
